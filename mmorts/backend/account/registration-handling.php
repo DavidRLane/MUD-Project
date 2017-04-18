@@ -1,9 +1,9 @@
 <?php
 	//DATABASE CONNECTION
-	$dbserver	= "localhost";
-	$dbusername	= "root";
-	$dbpassword	= "";
-	$db			= "mmorts";
+	$dbserver 		= "localhost";
+	$dbusername 	= "root";
+	$dbpassword 	= "";
+	$db 			= "mmorts";
 	
 	//CREATE CONNECTION
 	$conn = new mysqli($dbserver, $dbusername, $dbpassword, $db);
@@ -14,7 +14,7 @@
 		//KILL CONNECTION/ERROR MESSAGE
 		die("Connection Failed: ".$conn->connect_error);
 	}
-
+	
 	//ASSIGN VARIABLES FROM FORM
 	$username = $_POST['username'];
 	$password = $_POST['password'];
@@ -23,7 +23,6 @@
 	//ENCRYPT PASSWORD
 	$password = md5($password);
 	
-	//CHECK IF USERNAME IS UNIQUE
 	$sql = "SELECT username FROM users WHERE username = '$username'";
 	if($result=mysqli_query($conn,$sql))
 	{
@@ -35,7 +34,7 @@
 		header("refresh:2;url=../../index.php?page=register");
 		die();
 	}
-	else 
+	else
 	{
 		//INSERT DATA INTO DATABASE
 		$sql = "INSERT INTO users(username, password, email)
@@ -44,8 +43,8 @@
 		//EXECUTE QUERY
 		if($conn->query($sql) == TRUE)
 		{
-			echo "Account has been added successfully";
-			header("refresh:2;url=../../index.php?msg=loginsuccess");
+			echo "Account has been added successfully: ".$username." ".$password." ".$email;
+			header("refresh:2;url=../../index.php?page=register");
 			die();
 		}
 		else

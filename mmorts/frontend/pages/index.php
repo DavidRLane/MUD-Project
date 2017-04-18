@@ -87,26 +87,31 @@
 							 		<h4>Area Explored:</h4>
 							 		<div class="map">
 							 			<p>Current Position:</p>							 			
-							 			<div class="top_rooms"></div>
-							 			<div class="middle_rooms"></div>
-							 			<div class="bottom_rooms"></div>								 		
+							 			<div class="map-ui"></div>								 		
 								 	</div>
-								 	<h4>Checkpoints:</h4>
+								 	<h4>Test:</h4>
+								 	<div id="example">
+								 		
+								 	</div>
 							 	</div>
 							 	
 							 	<div class="user-space">
+							 		<div id="class-options" style="text-align: center; margin-top:10px;">
+							 			<button id="warButton" title="Warrior" onClick="">Warrior</button>
+							 			<button id="wizButton" title="Wizard" onClick="">Wizard</button>
+							 			<button id="rogButton" title="Rogue" onClick="">Rogue</button>
+							 		</div>
 							 		<div id="adventure-log">
-							 			<h2><strong>Adventure Log</strong></h2>
+							 			<h2><strong>Adventure Log</strong></h2>	
 							 			<p id="message_startgame">
 							 				The Adventure Begins!
 							 				Let's start with creating your character. 
-							 				Type "create [class name] to" to create your character.
-							 				The available classes are: <strong>Warrior</strong>, 
-							 				<strong>Wizard</strong>, and <strong>Rogue</strong>.
-							 				For more info, type <strong>"info [classname]"</strong>. 
+							 				The available classes are listed above,
+							 				press the button above of the class you want to be.
+							 				For more info, hover your cursor over the button"</strong>. 
 							 			</p>							 			
 							 															 			
-							 			<p id="help_command">
+							 			<p id="help_command" style="display:none">
 							 				For a list of commands, you can type <strong>"-help"</strong> below.
 							 			</p>							 			
 							 			<p><span id="message_help" style="display:none;">
@@ -122,9 +127,11 @@
 							 			
 							 			<div id="placeholder"></div>
 							 			
-							 			<form onsubmit="return false;" autocomplete="off">
-											<input type="text" id="command_line" name="command_line">
-										</form>
+							 			<div id="form-input" style="display:none">
+							 				<form onsubmit="return false;" autocomplete="off">
+												<input type="text" id="command_line" name="command_line">
+											</form>	
+							 			</div>
 							 		</div>
 							 	</div>
 							 	
