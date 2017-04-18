@@ -137,7 +137,7 @@
 							 	
 							 	<div class="user-resources">
 							 		<h4>User Inventory:</h4>
-							 		<div class="item_placeholder"></p>
+							 		<div id="item-placeholder"></p>
 							 	</div>
 							</div>
 							<?php

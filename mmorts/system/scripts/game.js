@@ -7,16 +7,12 @@ $(document).ready(function()
 {
     $("#adventure-log").fadeIn(1000);
     
-    var nCorridor = new Rooms("nCorridor");
+    var exampleText = document.getElementById("item-placeholder");
     
-    var exampleText = document.getElementById("example");
+    room_0.addItem(sword);
     
-    var sword = new Items("Sword",false,true,true,false);
-    
-    nCorridor.addItem(sword);
-    
-    exampleText.innerHTML = nCorridor.item[0].name;
-    
+    var takeItem = "take "+curRoom.item[0].name;
+    var dropItem = "drop "+curRoom.item[0].name;
     
     $("form").submit(function(){
         var input = $("#command_line").val();
@@ -62,13 +58,14 @@ $(document).ready(function()
         }
         
         //Take Commands
-        if(input == "take sword" && currentroom == "middle")
+        if(input == takeItem && curRoom.roomNum == 0)
         {
-            if(sword == false)
+            if(curRoom.item[0].name == sword.name && sword.pickUp == true)
             {
-                sword = true;
+            	//doesnt show up
+                sword.pickUp = false;
                 $("<p>You picked up a sword.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                $("div.item_placeholder").replaceWith('<div class="item_placeholder">Sword</div>');
+                $("div.item_placeholder").replaceWith('<div class="item_placeholder">'+curRoom.item[0].name+'</div>');
                 check();            
             }
             else
@@ -77,15 +74,15 @@ $(document).ready(function()
                 check();
             }                   
         }
-        else if(input == "take sword" && currentroom != "middle")
+        else if(input == takeItem && curRoom.roomNum != 0)
         {
             $("<p>There is no sword here</p>").hide().insertBefore("#placeholder").fadeIn(1000);
             check();
         }
-        else if(input == "drop sword" && currentroom == "middle")
+        else if(input == "drop sword" && curRoom.roomNum == 0)
         {
-            if(sword == true)
-            {
+        	if(curRoom.item[0].name == sword.name)
+        	{
                 sword = false;
                 $("<p>You dropped the sword.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
                 $("div.item_placeholder").replaceWith('<div class="item_placeholder"></div>');
@@ -97,7 +94,7 @@ $(document).ready(function()
                 check();
             }                   
         }
-        else if(input == "drop sword" && currentroom != "middle")
+        else if(input == "drop sword" && curRoom.roomNum != 0)
         {
             if(sword == true)
             {

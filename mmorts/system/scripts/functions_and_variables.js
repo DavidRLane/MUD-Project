@@ -59,6 +59,8 @@ var Items = function(name,use,pick,weap,arm){
 		this.armor = newArm;
 	};
 };
+var sword = new Items("sword",false,true,true,false,"Rusty Sword");
+
 
 //Room Class
 var Rooms = function(name,desc,exit){
