@@ -89,10 +89,8 @@
 							 			<p>Current Position:</p>							 			
 							 			<div class="map-ui"></div>								 		
 								 	</div>
-								 	<h4>Test:</h4>
-								 	<div id="example">
-								 		
-								 	</div>
+								 	<h4>Player Stats:</h4>
+								 	<div class="class-info"></div>							 	</div>
 							 	</div>
 							 	
 							 	<div class="user-space">
@@ -137,7 +135,7 @@
 							 	
 							 	<div class="user-resources">
 							 		<h4>User Inventory:</h4>
-							 		<div id="item-placeholder"></p>
+							 		<div class="item-placeholder"></p>
 							 	</div>
 							</div>
 							<?php

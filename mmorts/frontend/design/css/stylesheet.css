@@ -39,7 +39,7 @@
 }
 .user-space{
 	background-color:#CCCCCC;
-	height:450px;
+	height:470px;
 	width:560px;
 	border:1px solid black;
 	font:16px/26px Georgia;
@@ -52,7 +52,7 @@
 .user-map{
 	background-color:#CCCCCC;
 	border:1px solid black;
-	height:450px;
+	height:470px;
 	width:240px;
 	padding:10px;
 	float:left;
@@ -60,7 +60,7 @@
 .user-resources{
 	background-color:#CCCCCC;
 	border:1px solid black;
-	height:450px;
+	height:470px;
 	width:240px;
 	padding:10px;
 	float:left;

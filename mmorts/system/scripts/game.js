@@ -1,11 +1,22 @@
 ///Map
 showMap();
-//Make Random Monster
-MakeMonster();
 
 $(document).ready(function()
 {
     $("#adventure-log").fadeIn(1000);
+    $("div.class-info").replaceWith('<div class="class-info">'+
+    '<p><strong>Class:</strong> Warrior</p>'+
+    '<p><strong>Hp:</strong>0<strong>Mp:</strong> 0</p>'+
+    '<p><strong>Str:</strong> 0</p>'+
+    '<p><strong>Dex:</strong> 0</p>'+
+    '<p><strong>Con:</strong> 0</p>'+
+    '<p><strong>Int:</strong> 0</p>'+
+    '<p><strong>Wis:</strong> 0</p>'+
+    '<p><strong>Cha:</strong> 0</p>'+
+    '</div>'
+    );
+    
+    
     
     var exampleText = document.getElementById("item-placeholder");
     
@@ -65,7 +76,7 @@ $(document).ready(function()
             	//doesnt show up
                 sword.pickUp = false;
                 $("<p>You picked up a sword.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                $("div.item_placeholder").replaceWith('<div class="item_placeholder">'+curRoom.item[0].name+'</div>');
+                $("div.item-placeholder").replaceWith('<div class="item-placeholder">'+curRoom.item[0].name+'</div>');
                 check();            
             }
             else
@@ -83,9 +94,9 @@ $(document).ready(function()
         {
         	if(curRoom.item[0].name == sword.name)
         	{
-                sword = false;
+                sword.pickUp = true;
                 $("<p>You dropped the sword.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                $("div.item_placeholder").replaceWith('<div class="item_placeholder"></div>');
+                $("div.item-placeholder").replaceWith('<div class="item-placeholder"></div>');
                 check();            
             }
             else

@@ -9,9 +9,7 @@ var players = function(health,defense,attack,STR,DEX,CON,INT,WIS,CHA) {
     this.CON = CON;
     this.INT = INT;
     this.WIS = WIS;
-    this.CHA = CHA;
-    
-    
+    this.CHA = CHA;    
 };
 //Player Classes
 var warrior = new players(400,5,6,3,1,1,1,1,1);
@@ -36,7 +34,7 @@ var skeleton = new monsters(100,5,6);
 var ogre = new monsters(150,5,6);
 var monstername;
 //Selected Monster
-var selectedmonster;
+var selectedmonster = testMon;
 
 //Item Class
 var Items = function(name,use,pick,weap,arm){
@@ -59,17 +57,27 @@ var Items = function(name,use,pick,weap,arm){
 		this.armor = newArm;
 	};
 };
+//List of Items
 var sword = new Items("sword",false,true,true,false,"Rusty Sword");
 
+/* First room = Hall of Champions; choose class
+ * then teleported to Jungle Clearing, with Harambe
+ * 
+ * Harambe enters from the west, secret room
+ * not described after initial encounter
+ * 
+ * Harambe follows player through rooms
+ * Harambe will give hints to players with "Tell Harambe Help"
+ */
 
 //Room Class
-var Rooms = function(name,desc,exit){
+var Rooms = function(name,desc,roomNum,exit){
 	//Constructor
 	this.name = name;
 	this.desc = desc;
 	this.enemy = testMon;
 	this.item = new Array();
-	this.roomNum = 0;
+	this.roomNum = roomNum;
 	this.exit = exit;
 	this.inRoom = '[o]';
 	
@@ -117,17 +125,17 @@ var roomDescs = [
 	"Room 6 Desc",
 	"Room 7 Desc"];
 //Create other Rooms for map
-var room_0 = new Rooms("room-0",roomDescs[0],new Array(0,"N",7,"E"));
-var room_1 = new Rooms("room-1",roomDescs[1],new Array(0,"S",2,"N"));
-var room_2 = new Rooms("room-2",roomDescs[2],new Array(1,"S",3,"E"));
-var room_3 = new Rooms("room-3",roomDescs[3],new Array(2,"W",4,"N"));
-var room_4 = new Rooms("room-4",roomDescs[4],new Array(3,"S",5,"W"));
-var room_5 = new Rooms("room-5",roomDescs[5],new Array(4,"E",6,"E"));
-var room_6 = new Rooms("room-6",roomDescs[6],new Array(5,"E"));
-var room_7 = new Rooms("room-7",roomDescs[7],new Array(0,"E"));
+var room_0 = new Rooms("room-0",roomDescs[0],0,new Array(0,"N",7,"E"));
+var room_1 = new Rooms("room-1",roomDescs[1],1,new Array(0,"S",2,"N"));
+var room_2 = new Rooms("room-2",roomDescs[2],2,new Array(1,"S",3,"E"));
+var room_3 = new Rooms("room-3",roomDescs[3],3,new Array(2,"W",4,"N"));
+var room_4 = new Rooms("room-4",roomDescs[4],4,new Array(3,"S",5,"W"));
+var room_5 = new Rooms("room-5",roomDescs[5],5,new Array(4,"E",6,"E"));
+var room_6 = new Rooms("room-6",roomDescs[6],6,new Array(5,"E"));
+var room_7 = new Rooms("room-7",roomDescs[7],7,new Array(0,"E"));
 room_7.setSecret();
 
-//Current Room
+//Current Room; default Room 0
 var curRoom = room_0;
 room_0.setRoom();
 
@@ -168,29 +176,6 @@ document.getElementById("rogButton").onclick = function(){
 //Battle Variables
 var monsterdead = 0;
 var playerdead = 0;
-
-//Random Monster Generator
-function MakeMonster()
-{   
-    //Random Number
-    var randomnumber = Math.floor(Math.random(10)*10);
-
-    if(randomnumber >= 0 && randomnumber < 3)
-    {
-        selectedmonster = goblin;
-        monstername = "Goblin";
-    }
-    else if(randomnumber >= 3 && randomnumber < 6)
-    {
-        selectedmonster = skeleton;
-        monstername = "Skeleton";
-    }
-    else if(randomnumber >= 6)
-    {
-        selectedmonster = ogre;
-        monstername = "Ogre";
-    }    
-}
 
 //Attack Function
 function AttackPhase(attacktype)
@@ -348,18 +333,22 @@ function moveMap(direction)
         	if(curRoom.roomNum == 7)
         	{
         		curRoom = room_0;
+        		room_0.switchRooms(room_7);
         	}
         	else if(curRoom.roomNum == 2)
         	{
         		curRoom = room_3;
+        		room_3.switchRooms(room_2);
         	}
         	else if(curRoom.roomNum == 5)
         	{
         		curRoom = room_4;
+        		room_4.switchRooms(room_5);
         	}
         	else if(curRoom.roomNum == 6)
         	{
         		curRoom = room_5;
+        		room_5.switchRooms(room_6);
         	}
         	$("<p> "+ curRoom.desc + ".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
         	return true;
