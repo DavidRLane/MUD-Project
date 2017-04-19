@@ -1,4 +1,4 @@
-//Player Stats
+//Player Stats; Include invItems in intialization
 var players = function(health,defense,attack,STR,DEX,CON,INT,WIS,CHA) {
     //Constructor
     this.health = health;
@@ -9,12 +9,31 @@ var players = function(health,defense,attack,STR,DEX,CON,INT,WIS,CHA) {
     this.CON = CON;
     this.INT = INT;
     this.WIS = WIS;
-    this.CHA = CHA;    
+    this.CHA = CHA; 
+    //this.inv = invItems
+    
+    this.dropItem = function(itemName){
+		for (i in players.inventory.item){
+			if(this.inv == itemName){
+				if(this.inv[itemName].pickUp == false){
+					this.inv[itemName].pickUp = true;
+					
+					//Add Item to the Current Room
+					curRoom.item.push(this.inv[itemName]);
+					
+					//Remove from Inventory
+					this.inv.splice(i,1);
+					return true;
+				}
+			}
+		}
+		return false;
+	};
 };
 //Player Classes
-var warrior = new players(400,5,6,3,1,1,1,1,1);
-var rogue = new players(300,5,8,1,3,1,1,1,1);
-var wizard = new players(250,5,6,1,1,1,3,1,1);
+var warrior = new players(400,5,6,3,1,1,1,1,1/* invItem */);
+var rogue = new players(300,5,8,1,3,1,1,1,1/* invItem */);
+var wizard = new players(250,5,6,1,1,1,3,1,1/* invItem */);
 var classname;
 var classchosen = 0;
 //Selected Player
@@ -98,8 +117,21 @@ var Rooms = function(name,desc,roomNum,exit){
 	this.addItem = function(newItem){
 		this.item.push(newItem);
 	};
-	this.removeItem = function(){
-		this.item.pop();
+	this.takeItem = function(itemName){
+		for (i in this.item){
+			if(this.item[i].name == itemName){
+				if(this.item[i].pickUp == true){
+					this.item[i].pickUp = false;
+					//Add Item to Player Inv
+					inventory.item["sword"] = this.item;
+					
+					//Remove Item from Room
+					this.item.splice(i,1);
+					return true;
+				}
+			}
+		}
+		return false;
 	};
 	this.moveRoom = function(newRoom,newNum,newExit,newDesc){
 		this.name = newRoom;
@@ -134,6 +166,8 @@ var room_5 = new Rooms("room-5",roomDescs[5],5,new Array(4,"E",6,"E"));
 var room_6 = new Rooms("room-6",roomDescs[6],6,new Array(5,"E"));
 var room_7 = new Rooms("room-7",roomDescs[7],7,new Array(0,"E"));
 room_7.setSecret();
+
+room_0.addItem(sword);
 
 //Current Room; default Room 0
 var curRoom = room_0;

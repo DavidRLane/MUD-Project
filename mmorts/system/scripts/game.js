@@ -20,14 +20,11 @@ $(document).ready(function()
     
     var exampleText = document.getElementById("item-placeholder");
     
-    room_0.addItem(sword);
-    
-    var takeItem = "take "+curRoom.item[0].name;
-    var dropItem = "drop "+curRoom.item[0].name;
-    
     $("form").submit(function(){
         var input = $("#command_line").val();
         var check = false;
+        
+        var itemName = input.slice(5);
         
         //Check Command
         function check() 
@@ -68,55 +65,44 @@ $(document).ready(function()
             check();
         }
         
-        //Take Commands
-        if(input == takeItem && curRoom.roomNum == 0)
+        //Take Command; Take from Current Room
+        //Room 1 Items
+        if(input == "take "+itemName && curRoom.roomNum == 0)
         {
-            if(curRoom.item[0].name == sword.name && sword.pickUp == true)
+            if(curRoom.takeItem(itemName) == true)
             {
-            	//doesnt show up
-                sword.pickUp = false;
-                $("<p>You picked up a sword.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                $("div.item-placeholder").replaceWith('<div class="item-placeholder">'+curRoom.item[0].name+'</div>');
+                $("<p>You picked up a "+itemName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                $("div.item-placeholder").replaceWith('<div class="item-placeholder">'+itemName+'</div>');
                 check();            
             }
             else
             {
-                $("<p>You already have a sword.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                check();
+            	$("<p>There is no "+itemName+" here</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+            	check();
             }                   
         }
-        else if(input == takeItem && curRoom.roomNum != 0)
+        //Other Rooms Follow Example
+        else if(input == "take "+itemName && curRoom.roomNum == 1)
         {
-            $("<p>There is no sword here</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+            $("<p>There is no "+itemName+" here</p>").hide().insertBefore("#placeholder").fadeIn(1000);
             check();
         }
-        else if(input == "drop sword" && curRoom.roomNum == 0)
+        
+        //Drop Command; Drops Player Item into Current Room
+        //Items not being saved after being taken
+        else if(input == "drop "+itemName)
         {
-        	if(curRoom.item[0].name == sword.name)
+        	if(player.dropItem(itemName) == true)
         	{
-                sword.pickUp = true;
-                $("<p>You dropped the sword.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                $("<p>You dropped the "+itemName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
                 $("div.item-placeholder").replaceWith('<div class="item-placeholder"></div>');
                 check();            
             }
             else
             {
-                $("<p>You don't have a sword.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                $("<p>You don't have "+itemName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
                 check();
             }                   
-        }
-        else if(input == "drop sword" && curRoom.roomNum != 0)
-        {
-            if(sword == true)
-            {
-                $("<p>Best not to leave the sword here</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                check();
-            }
-            else
-            {
-                $("<p>You don't have a sword</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                check();
-            }    
         }
         
         //Goto Commands
