@@ -1,7 +1,9 @@
-//Player Stats; Include invItems in intialization
-var players = function(health,defense,attack,STR,DEX,CON,INT,WIS,CHA) {
+//Player Stats
+var players = function(className,health,magic,defense,attack,STR,DEX,CON,INT,WIS,CHA,inv) {
     //Constructor
+    this.className = className;
     this.health = health;
+    this.magic = magic;
     this.defense = defense;
     this.attack = attack;
     this.STR = STR;
@@ -9,35 +11,28 @@ var players = function(health,defense,attack,STR,DEX,CON,INT,WIS,CHA) {
     this.CON = CON;
     this.INT = INT;
     this.WIS = WIS;
-    this.CHA = CHA; 
-    //this.inv = invItems
-    
-    this.dropItem = function(itemName){
-		for (i in players.inventory.item){
-			if(this.inv == itemName){
-				if(this.inv[itemName].pickUp == false){
-					this.inv[itemName].pickUp = true;
-					
-					//Add Item to the Current Room
-					curRoom.item.push(this.inv[itemName]);
-					
-					//Remove from Inventory
-					this.inv.splice(i,1);
-					return true;
-				}
-			}
-		}
-		return false;
-	};
+    this.CHA = CHA;    
+    this,inv = inv;
 };
-//Player Classes
-var warrior = new players(400,5,6,3,1,1,1,1,1/* invItem */);
-var rogue = new players(300,5,8,1,3,1,1,1,1/* invItem */);
-var wizard = new players(250,5,6,1,1,1,3,1,1/* invItem */);
-var classname;
-var classchosen = 0;
+//Player Display
+var displayStats = function(player){
+    $("div.class-info").replaceWith('<div class="class-info">'+
+    '<p><strong>Class:</strong> '+player.className+'</p>'+
+    '<p><strong>Hp:</strong> '+player.health+'<strong> Mp:</strong> '+player.magic+'</p>'+
+    '<p><strong>Str:</strong> '+player.STR+'</p>'+
+    '<p><strong>Dex:</strong> '+player.DEX+'</p>'+
+    '<p><strong>Con:</strong> '+player.CON+'</p>'+
+    '<p><strong>Int:</strong> '+player.WIS+'</p>'+
+    '<p><strong>Wis:</strong> '+player.INT+'</p>'+
+    '<p><strong>Cha:</strong> '+player.CHA+'</p>'+
+    '</div>'
+    );
+};
+
 //Selected Player
+var startPlayer = new players("Citizen",100,25,1,1,1,1,1,1,1,1);
 var player;
+player = startPlayer;
 
 //Monster Stats
 var monsters = function(health,defense,attack) {
@@ -78,6 +73,8 @@ var Items = function(name,use,pick,weap,arm){
 };
 //List of Items
 var sword = new Items("sword",false,true,true,false,"Rusty Sword");
+var club = new Items("club",false,true,true,false,"Basic Club");
+var leatherArmor = new Items("leather armor",false,false,false,true,"Basic Leather Armor");
 
 /* First room = Hall of Champions; choose class
  * then teleported to Jungle Clearing, with Harambe
@@ -117,21 +114,8 @@ var Rooms = function(name,desc,roomNum,exit){
 	this.addItem = function(newItem){
 		this.item.push(newItem);
 	};
-	this.takeItem = function(itemName){
-		for (i in this.item){
-			if(this.item[i].name == itemName){
-				if(this.item[i].pickUp == true){
-					this.item[i].pickUp = false;
-					//Add Item to Player Inv
-					inventory.item["sword"] = this.item;
-					
-					//Remove Item from Room
-					this.item.splice(i,1);
-					return true;
-				}
-			}
-		}
-		return false;
+	this.removeItem = function(){
+		this.item.pop();
 	};
 	this.moveRoom = function(newRoom,newNum,newExit,newDesc){
 		this.name = newRoom;
@@ -167,8 +151,6 @@ var room_6 = new Rooms("room-6",roomDescs[6],6,new Array(5,"E"));
 var room_7 = new Rooms("room-7",roomDescs[7],7,new Array(0,"E"));
 room_7.setSecret();
 
-room_0.addItem(sword);
-
 //Current Room; default Room 0
 var curRoom = room_0;
 room_0.setRoom();
@@ -189,23 +171,27 @@ var gameSetup = function(className){
 
 //Class Buttons; Sets Class and reveals Textbox
 document.getElementById("warButton").onclick = function(){	
-    player = warrior;
-    classname = "Warrior";
+    player = new players("Warrior",400,50,5,6,3,1,1,1,1,1);
 
-    gameSetup(classname);
+    gameSetup(player.className);
+    
+    displayStats(player);
+};
+document.getElementById("rogButton").onclick = function(){  
+    player = new players("Rogue",300,75,5,8,1,3,1,1,1,1);
+
+    gameSetup(player.className);
+    
+    displayStats(player);
 };
 document.getElementById("wizButton").onclick = function(){	
-    player = wizard;
-    classname = "Wizard";
+    player = new players("Wizard",250,150,5,6,1,1,1,3,1,1);;
 
-    gameSetup(classname);
+    gameSetup(player.className);
+    
+    displayStats(player);
 };
-document.getElementById("rogButton").onclick = function(){	
-    player = rogue;
-    classname = "Rogue";
 
-    gameSetup(classname);
-};
 
 //Battle Variables
 var monsterdead = 0;
@@ -216,7 +202,7 @@ function AttackPhase(attacktype)
 {
     $("<p>Combat Initiated!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
     $("<p> " + monstername + "'s Health is " + selectedmonster.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-    $("<p>" + classname + "'s Health is " + player.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+    $("<p>" + player.className + "'s Health is " + player.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);
   
     //Player Turn
     if(attacktype == "normal")
@@ -235,7 +221,7 @@ function AttackPhase(attacktype)
     {
         $("<p>Player heals for " + Math.ceil(Math.random(player.WIS)*10+8) + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);       
         player.health = player.health + Math.ceil(Math.random(player.WIS)*10+8);
-        $("<p> " + classname + "'s Health is now " + player.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+        $("<p> " + player.className + "'s Health is now " + player.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
     }
 
     //Monster is Dead
@@ -243,7 +229,7 @@ function AttackPhase(attacktype)
     {
         monsterdead = 1;
         battle = 0;
-        $("<p>" + classname + " has won!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+        $("<p>" + player.className + " has won!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
     }
     else 
     {
@@ -251,7 +237,7 @@ function AttackPhase(attacktype)
         $("<p>Monster Attacks!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
         
         player.health = player.health - Math.ceil(Math.random(selectedmonster.str)+10-player.defense);
-        $("<p>" + classname + "'s Health is now " + player.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+        $("<p>" + player.className + "'s Health is now " + player.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
     }       
     //Player is dead
     if(player.health < 0)
