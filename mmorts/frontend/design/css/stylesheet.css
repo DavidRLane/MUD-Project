@@ -39,7 +39,7 @@
 }
 .user-space{
 	background-color:#CCCCCC;
-	height:470px;
+	height:520px;
 	width:560px;
 	border:1px solid black;
 	font:16px/26px Georgia;
@@ -52,15 +52,15 @@
 .user-map{
 	background-color:#CCCCCC;
 	border:1px solid black;
-	height:470px;
+	height:520px;
 	width:240px;
 	padding:10px;
 	float:left;
 }
-.user-resources{
+.user-inv{
 	background-color:#CCCCCC;
 	border:1px solid black;
-	height:470px;
+	height:520px;
 	width:240px;
 	padding:10px;
 	float:left;

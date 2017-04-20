@@ -84,13 +84,13 @@
 							<h3>Workspace</h3>
 							<div class="user-wrapper">
 								<div class="user-map">
-							 		<h4>Area Explored:</h4>
+							 		<h4><strong>Area Explored:</strong></h4>
 							 		<div class="map">
 							 			<p>Current Position:</p>							 			
 							 			<div class="map-ui"></div>								 		
 								 	</div>
-								 	<h4>Player Stats:</h4>
-								 	<div class="class-info"></div>							 	</div>
+								 	<h4><strong>Player Stats:</strong></h4>
+								 	<div class="class-info"></div>							 	 	
 							 	</div>
 							 	
 							 	<div class="user-space">
@@ -116,7 +116,8 @@
 						 					<strong>List of Commands: </strong>							 				
 						 					go [direction] = move in the direction entered.
 						 					take [item] = take an item that is obtainable.
-						 					talk to [person] = talk to the person, if they can interact with you.		 				
+						 					use [item] = use the item in the room, if possible.
+						 					equip [weapon or armor] = equip the item, boosting your stats or decreasing them.		 				
 							 			</span></p>
 							 			<p id="room_description"></p>
 							 			
@@ -133,9 +134,9 @@
 							 		</div>
 							 	</div>
 							 	
-							 	<div class="user-resources">
-							 		<h4>User Inventory:</h4>
-							 		<div class="item-placeholder"></p>
+							 	<div class="user-inv">
+							 		<h4><strong>User Inventory:</strong></h4>
+							 		<div id="item-placeholder"></p>
 							 	</div>
 							</div>
 							<?php

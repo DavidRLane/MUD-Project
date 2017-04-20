@@ -5,20 +5,17 @@ $(document).ready(function()
 {
     $("#adventure-log").fadeIn(1000);
     displayStats(player);
-    
-    var exampleText = document.getElementById("item-placeholder");
-    
-    room_0.addItem(sword);
-    
-    var takeItem = "take "+curRoom.item[0].name;
-    var dropItem = "drop "+curRoom.item[0].name;
+    displayInv(player);
     
     $("form").submit(function(){
         var input = $("#command_line").val();
         var check = false;
+    
+    	var itemName = input.slice(5);
+        var usePlayerItem = input.slice(4);
         
         //Check Command
-        function check() 
+        function checkFunc() 
         {
             check = true;
         }
@@ -30,14 +27,69 @@ $(document).ready(function()
         if(input == "-help")
         {
             $("#message_help").clone().hide().insertBefore("#placeholder").fadeIn(1000);       
-            check();
+            checkFunc();
         }
+        
+        //Goto Commands
+        else if(input == "go west")
+        {
+            if(moveMap("west") == true)
+            {             
+            	showMap();   
+                checkFunc();                
+            }
+            else
+            {
+                $("<p>You cannot go that way!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                checkFunc();
+            }
+        }
+        else if(input == "go east")
+        {
+            if(moveMap("east") == true)
+            {
+                showMap();
+                checkFunc();                  
+            }
+            else
+            {
+                $("<p>You cannot go that way!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                checkFunc();
+            }
+        }   
+        else if(input == "go north")
+        {
+            if(moveMap("north") == true)
+            {
+                showMap();
+				checkFunc();                
+            }
+            else
+            {
+                $("<p>You cannot go that way!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                checkFunc();
+            }
+        }    
+        else if(input == "go south")
+        {
+            if(moveMap("south") == true)
+            {
+            	showMap();                
+                checkFunc();                
+            }
+            else
+            {
+                $("<p>You cannot go that way!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                checkFunc();
+            }
+        }
+        
         //Attack Command
-        if(input == "attack")
+        else if(input == "attack")
         {   
             $("<p>Normal Strike!</p>").hide().insertBefore("#placeholder").fadeIn(1000); 
             AttackPhase("normal");
-            check();            
+            checkFunc();
         }
         
         //Spells
@@ -45,7 +97,7 @@ $(document).ready(function()
         {
             $("<p>Frost Ray!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
             AttackPhase("spell");
-            check();
+            checkFunc();
         }
         
         //Buffs
@@ -53,113 +105,91 @@ $(document).ready(function()
         {
             $("<p>Cure Light Wounds</p>").hide().insertBefore("#placeholder").fadeIn(1000);
             AttackPhase("buff");
-            check();
+            checkFunc();
         }
         
-        //Take Commands
-        if(input == takeItem && curRoom.roomNum == 0)
+        //Equip Command
+        else if(input == "equip "+equipItem && player.equipItem(equipItem) == true)
         {
-            if(curRoom.item[0].name == sword.name && sword.pickUp == true)
+        	$("<p>You equipped the "+equipName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+            checkFunc();
+        }
+        else if(input == "equip "+equipItem && player.equipItem(equipItem) == false)
+        {
+        	$("<p>You cannot equip that!.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+			checkFunc();
+        }
+        
+        //Take Command; Take Item from Current Room
+        else if(input == "take "+itemName)
+        {
+            if(curRoom.findItem(itemName) == true)
             {
-            	//doesnt show up
-                sword.pickUp = false;
-                $("<p>You picked up a sword.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                $("div.item-placeholder").replaceWith('<div class="item-placeholder">'+curRoom.item[0].name+'</div>');
-                check();            
+            	if(itemName[0] == 'a' || itemName[0] == 'A')
+            	{
+            		//Update with More Items
+                	$("<p>You picked up an "+itemName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                	displayInv(player);
+                	checkFunc();	
+            	}
+            	else
+            	{
+            		//Update with More Items
+                	$("<p>You picked up a "+itemName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                	displayInv(player);
+                	checkFunc();
+            	}        
             }
             else
             {
-                $("<p>You already have a sword.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                check();
+                $("<p>There is no "+itemName+" here.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                checkFunc();
             }                   
         }
-        else if(input == takeItem && curRoom.roomNum != 0)
+        
+        //Use Command; Use an item in the Current Room
+        else if(input = "use "+usePlayerItem)
         {
-            $("<p>There is no sword here</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-            check();
-        }
-        else if(input == "drop sword" && curRoom.roomNum == 0)
-        {
-        	if(curRoom.item[0].name == sword.name)
+        	if(player.useItem(usePlayerItem) == "stone key" && curRoom.roomNum == 0)
         	{
-                sword.pickUp = true;
-                $("<p>You dropped the sword.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                $("div.item-placeholder").replaceWith('<div class="item-placeholder"></div>');
-                check();            
-            }
-            else
-            {
-                $("<p>You don't have a sword.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                check();
-            }                   
-        }
-        else if(input == "drop sword" && curRoom.roomNum != 0)
-        {
-            if(sword == true)
-            {
-                $("<p>Best not to leave the sword here</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                check();
-            }
-            else
-            {
-                $("<p>You don't have a sword</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                check();
-            }    
+        		$("<p>You used the "+usePlayerItem+
+        		". The door to the North is now open!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                curRoom.openRoom(curRoom.roomNum,"N");
+                displayInv(player);
+                checkFunc();
+        	}
+        	else
+        	{
+        		$("<p>You can't use "+itemName+" here.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                checkFunc();
+        	}
         }
         
-        //Goto Commands
-        if(input == "go west")
+        //Drop Command; Drops Player Item into Current Room
+        else if(input == "drop "+itemName)
         {
-            if(moveMap("west") == true)
-            {             
-            	showMap();   
-                check();                    
+        	if(player.dropItem(itemName) == true)
+        	{
+        		//Update with Less Items
+                $("<p>You dropped "+itemName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                displayInv(player);
+                checkFunc();            
             }
             else
             {
-                $("<p>You cannot go that way!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                check();    
-            }
+            	if(itemName[0] == 'a' || itemName[0] == 'A')
+            	{
+                	$("<p>You don't have an "+itemName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                	checkFunc();	
+            	}
+            	else
+            	{
+            		$("<p>You don't have a "+itemName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                	checkFunc();
+            	}
+            }                   
         }
-        if(input == "go east")
-        {
-            if(moveMap("east") == true)
-            {
-                showMap();
-                check();                    
-            }
-            else
-            {
-                $("<p>You cannot go that way!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                check();    
-            }
-        }   
-        if(input == "go north")
-        {
-            if(moveMap("north") == true)
-            {
-                showMap();
-				check();                    
-            }
-            else
-            {
-                $("<p>You cannot go that way!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                check();    
-            }
-        }    
-        if(input == "go south")
-        {
-            if(moveMap("south") == true)
-            {
-            	showMap();                
-                check();                    
-            }
-            else
-            {
-                $("<p>You cannot go that way!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                check();    
-            }
-        }   
+           
         //Unknown Command
         else if(check == false)
         {    
