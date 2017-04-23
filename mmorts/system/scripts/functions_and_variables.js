@@ -141,25 +141,26 @@ var Rooms = function(name,desc,item,roomNum,exit){
 	this.item = item;
 	this.roomNum = roomNum;
 	this.exit = exit;
-	this.inRoom = '[o]';
+	this.inRoom = '[ '+roomNum+' ]';
 	
 	//Functions
 	this.setRoom = function(){
-		this.inRoom = '[x]';
+		this.inRoom = '[ x ]';
 	};
 	this.setSecret = function(){
-		this.inRoom = '[w]';
+		this.inRoom = '[ w ]';
 	};
 	this.switchRooms = function(room){
-		this.inRoom = '[x]';
-		room.inRoom = '[o]';
+		this.inRoom = '[ x ]';
+		room.inRoom = '[ '+room.roomNum+' ]';
 	};
 	this.roomDesc = function(){
+		var temp = this.desc;
 		for(var i=0; i<this.item.length; i++){
-			this.desc = this.desc + " " +
+			temp = this.desc + " " +
 			this.item[i].desc + " on the ground of " + this.name+ ".";	
 		}
-		return this.desc;
+		return temp;
 	};
 	this.addItem = function(newItem){
 		this.item.push(newItem);
@@ -183,11 +184,6 @@ var Rooms = function(name,desc,item,roomNum,exit){
 					//Change Pick Up Setting
 					this.item[i].pickUp = false;
 					
-					//Cut out Item from Desc
-					var subDesc = 20+this.name.length+this.item[i].desc.length;
-					var endIndex = this.desc.length-subDesc;
-					this.desc = this.desc.slice(0,endIndex);
-					
 					//Switch from Room to Player Inventory
 					player.addItem(this.item[i]);
 					this.item.splice(i,1);
@@ -210,35 +206,56 @@ var Rooms = function(name,desc,item,roomNum,exit){
 //Room Descriptions 
 var roomDescs = [
 	//Room 0
-	"You stand in a tranquil clearing in the middle of a jungle. The tall canopy of trees shades you from the bright sun, "+
-	     "except for the few beams of light that break through the exotic leaves above you. Dense tall grass surrounds the area. "+
-	     "The entrance to a mysterious cave looms to the NORTH.",
+	"You stand in a tranquil clearing in the middle of a jungle. "+
+	   "The tall canopy of trees shades you from the bright sun, "+
+	   "except for the few beams of light that break through the exotic leaves above you. "+
+	   "Dense tall grass surrounds the area. "+
+	   "The entrance to a mysterious cave looms to the NORTH.",
 	//Room 1
-	"An ornate door is built into the NORTH wall of the cave entrance. A small crudely written SIGN is nailed to the front of the "+
-	     "door. A small potted sunflower sits in the corner of the entrance.",
+	"An ornate door is built into the NORTH wall of the cave entrance. "+
+	   "A small crudely written SIGN is nailed to the front of the door. "+
+	   "A small potted sunflower sits in the corner of the entrance.",
 	//Room 2
-	"This room is a mess of furniture and old banana peels. A large wooden dining table takes up most of the middle of the room, "+
-	     "with chairs, rugs, and bookshelves taking up the rest. An empty fruit BOWL rests at the center of the dining table. A grand "+
-	     "PORTRAIT of Doctor Zaius hangs on the north wall. The cave entrance door leads to the SOUTH. Another door leads to the EAST.",
+	"This room is a mess of furniture and old banana peels. "+
+	   "A large wooden dining table takes up most of the middle of the room, "+
+	   "with chairs, rugs, and bookshelves taking up the rest. "+
+	   "An empty fruit BOWL rests at the center of the dining table. "+
+	   "A grand PORTRAIT of Doctor Zaius hangs on the north wall. "+
+	   "The cave entrance door leads to the SOUTH. "+
+	   "Another door leads to the EAST.",
 	//Room 3
-	"You stand in an immaculately clean room. Paper walls surround a bamboo mat floor. A smoldering lantern hangs from a wooden "+
-	     "beam crossing the ceiling. A cheesed off looking target dummy is propped up in the center of the room. A door leads WEST. "+
-	     "A sliding paper door leads NORTH.",
+	"You stand in an immaculately clean room. "+
+	   "Paper walls surround a bamboo mat floor. "+
+	   "A smoldering lantern hangs from a wooden beam crossing the ceiling. "+
+	   "A cheesed off looking target dummy is propped up in the center of the room. "+
+	   "A door leads WEST. "+
+	   "A sliding paper door leads NORTH.",
 	//Room 4
-	"An ominous red field of light cuts this vaulting chamber in half. It shimmers and pulses as you draw closer to it. You feel as if passing "+
-	     "through the field would harm you so you decide not to. It blocks off the WEST side of the room.",
+	"An ominous red field of light cuts this vaulting chamber in half. "+
+	   "It shimmers and pulses as you draw closer to it. "+
+	   "You feel as if passing through the field would harm you so you decide not to. "+
+	   "It blocks off the WEST side of the room.",
 	//Room 5
-	"An ominous red field of light cuts this vaulting chamber in half. It shimmers and pulses as you draw closer to it. You feel as if passing "+
-	     "through the field would harm you so you decide not to. It blocks off the EAST side of the room. Harambe blocks off an exit to the WEST. "+
-	     "A small wooden BOX with an attached post-it NOTE sits on a stone slab off to one side of the room.",
+	"An ominous red field of light cuts this vaulting chamber in half. "+
+	   "It shimmers and pulses as you draw closer to it. "+
+	   "You feel as if passing through the field would harm you so you decide not to. "+
+	   "It blocks off the EAST side of the room. "+
+	   "Harambe blocks off an exit to the WEST. "+
+	   "A small wooden BOX with an attached post-it NOTE sits on a stone slab off to one side of the room.",
 	//Room 6
-	"You stand before three large marble statue of different champions. The WIZARD holds a staff and wears a pointed starfield hat. The FIGHTER "+
-	     "lifts a sword up to the ceiling and carries a helmet under his arm. The CLERIC has a pool of burning oil in the palm of her hand and is giving "+
-	     "a pleasent smile. Marble pillars jut out of the walls at each corner of the room, holding up the domed ceiling that is painted with the "+
-	     "constellations. A dark iron door leads to the NORTH. An passageway leads to the EAST.",
+	"You stand before three large marble statue of different champions. "+
+	   "The WIZARD holds a staff and wears a pointed starfield hat. "+
+	   "The FIGHTER lifts a sword up to the ceiling and carries a helmet under his arm. "+
+	   "The CLERIC has a pool of burning oil in the palm of her hand and is giving a pleasent smile. "+
+	   "Marble pillars jut out of the walls at each corner of the room, "+
+	   "holding up the domed ceiling that is painted with the constellations. "+
+	   "A dark iron door leads to the NORTH. "+
+	   "An passageway leads to the EAST.",
 	//Room 7
-	"Beyond the tall grass is a secret Gorilla Patch. A giant banana tree extends from the center of the patch into the sky. Leaning on the "+
-	     "tree is a strange OBJECT. A break in the tall grass leads to the EAST."];
+	"Beyond the tall grass is a secret Gorilla Patch. "+
+	   "A giant banana tree extends from the center of the patch into the sky. "+
+	   "Leaning on the tree is a strange OBJECT. "+
+	   "A break in the tall grass leads to the EAST."];
 //Create other Rooms for map
 var room_0 = new Rooms("Jungle Clearing",roomDescs[0],room_0Inv,0,new Array(7,"E"));
 var room_1 = new Rooms("Tunnel Entrance",roomDescs[1],roomInv,1,new Array(0,"S",2,"N"));
@@ -335,9 +352,9 @@ var displayInv = function(player){
 function showMap(){
 	$("div.map-ui").replaceWith('<div class="map-ui">'+
 		'<p> '+room_6.inRoom+' '+room_5.inRoom+' '+room_4.inRoom+' </p>'+
-		'<p> [w] '+room_2.inRoom+' '+room_3.inRoom+' </p>'+
-		'<p> [w] '+room_1.inRoom+' [w] </p>'+
-		'<p> '+room_7.inRoom+' '+room_0.inRoom+' [w] </p>'+
+		'<p> [ w ] '+room_2.inRoom+' '+room_3.inRoom+' </p>'+
+		'<p> [ w ] '+room_1.inRoom+' [ w ] </p>'+
+		'<p> '+room_7.inRoom+' '+room_0.inRoom+' [ w ] </p>'+
 	'</div>');
 }
 

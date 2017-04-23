@@ -8,11 +8,6 @@
 	margin-top:15px;
 	margin-bottom:15px;
 }
-.header{
-	background-color:#265A88;
-	padding:10px;
-	overflow:hidden;
-}
 .logo{
 	float:left;
 }
@@ -25,12 +20,17 @@
 	margin-top:80px;
 	margin-right:25px;
 }
+.header{
+	background-color:#3E8F3E;
+	padding:10px;
+	overflow:hidden;
+}
 .content{
-	background-color:#C4E3F3;
+	background-color:#B2DBA1;
 	padding:10px;
 }
 .footer{
-	background-color:#337AB7;
+	background-color:#3E8F3E;
 	text-align:center;
 	padding:10px;
 }
@@ -40,7 +40,7 @@
 .user-space{
 	background-color:#CCCCCC;
 	height:520px;
-	width:560px;
+	width:580px;
 	border:1px solid black;
 	font:16px/26px Georgia;
 	overflow:auto;	

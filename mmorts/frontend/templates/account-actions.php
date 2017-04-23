@@ -4,7 +4,7 @@
 ?>
 	<div class="account-actions">
 		<a href="index.php?page=logout">Logout</a>
-		<a href="index.php?page=account-actions">Account</a>
+		<!-- <a href="index.php?page=account-actions">Account</a> -->
 	</div>
 <?php
 	}

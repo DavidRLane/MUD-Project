@@ -109,17 +109,22 @@ $(document).ready(function()
         }
         
         //Equip Command
-        else if(input == "equip "+equipItem && player.equipItem(equipItem) == true)
+        else if(input == "equip "+equipItem)
         {
-        	$("<p>You equipped the "+equipName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+            if(player.equipItem(equipItem) == true)
+            {
+                $("<p>You equipped the "+equipName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                checkFunc();    
+            }        	
+        }
+       
+        //Look Around Command
+        else if(input == "look around")
+        {
+            $("<p> "+ curRoom.roomDesc() + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);
             checkFunc();
         }
-        else if(input == "equip "+equipItem && player.equipItem(equipItem) == false)
-        {
-        	$("<p>You cannot equip that!.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-			checkFunc();
-        }
-        
+       
         //Take Command; Take Item from Current Room
         else if(input == "take "+itemName)
         {
@@ -139,12 +144,7 @@ $(document).ready(function()
                 	displayInv(player);
                 	checkFunc();
             	}        
-            }
-            else
-            {
-                $("<p>There is no "+itemName+" here.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-                checkFunc();
-            }                   
+            }              
         }
         
         //Use Command; Use an item in the Current Room
@@ -156,11 +156,6 @@ $(document).ready(function()
         		". The door to the North is now open!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
                 curRoom.openRoom(curRoom.roomNum,"N");
                 displayInv(player);
-                checkFunc();
-        	}
-        	else
-        	{
-        		$("<p>You can't use "+itemName+" here.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
                 checkFunc();
         	}
         }
@@ -191,9 +186,28 @@ $(document).ready(function()
         }
            
         //Unknown Command
-        else if(check == false)
-        {    
-            $("<p>I do not understand " + input + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+        if(check == false)
+        {   
+            var item = input.slice(0,4);
+            var useItem = input.slice(0,3);
+            
+            if(item == "take")
+            {
+                $("<p>You can't take "+itemName+" here.</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+            }
+            else if(useItem == "use")
+            {
+                $("<p>You can't use "+usePlayerItem+" here.</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+            }
+            else if(equipItem == "equip")
+            {
+                $("<p>You can't equip"+usePlayerItem+" here.</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+            }
+            else
+            {            
+                $("<p>I do not understand " + input + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+            }
+             
         }
     });
 });

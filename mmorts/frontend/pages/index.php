@@ -25,8 +25,10 @@
 			<?php require_once("frontend/templates/header.php"); ?>
 			<div class="layer">
 				<div class="content">
-					<h1>Home</h1>
-					<p>This is the Home Page</p>
+					<div id="home-intro">
+						<h1>Home</h1>
+						<p>This is the Home Page</p>
+					</div>
 					<?php
 						if(isset($_GET['msg']))
 						{
@@ -80,8 +82,11 @@
 							//USERDATA INVENTORY
 							$user_inv = $row['name'];
 							
-							?>	
-							<h3>Workspace</h3>
+							?>
+							<script>
+								document.getElementById("home-intro").style.display = "none";	
+							</script>
+							
 							<div class="user-wrapper">
 								<div class="user-map">
 							 		<h4><strong>Area Explored:</strong></h4>
@@ -100,7 +105,7 @@
 							 			<button id="rogButton" title="Rogue" onClick="">Rogue</button>
 							 		</div>
 							 		<div id="adventure-log">
-							 			<h2><strong>Adventure Log</strong></h2>	
+							 			<h2 style="text-align: center"><strong>Adventure Log</strong></h2>	
 							 			<p id="message_startgame">
 							 				The Adventure Begins!
 							 				Let's start with creating your character. 
@@ -144,7 +149,6 @@
 						?>
 					<a href="index.php?page=index">Home</a>	
 					<a href="index.php?page=contact">Contact</a>
-					<a href="index.php?page=servertesting">Server</a>
 				</div>
 			</div>
 			<?php require_once("frontend/templates/footer.php"); ?>
