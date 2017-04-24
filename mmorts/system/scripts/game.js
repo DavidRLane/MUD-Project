@@ -21,6 +21,7 @@ $(document).ready(function()
         function checkFunc() 
         {
             check = true;
+            
         }
         
         //Reset Text Box
@@ -29,7 +30,7 @@ $(document).ready(function()
         //Help Command
         if(input == "-help")
         {
-            $("#message_help").clone().hide().insertBefore("#placeholder").fadeIn(1000);       
+            $("#message_help").clone().hide().insertBefore("#placeholder").fadeIn(1000);
             checkFunc();
         }
         

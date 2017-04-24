@@ -469,9 +469,6 @@ function showMap(){
 	'</div>');
 }
 
-//Battle Variables
-var playerdead = 0;
-
 //Attack Function
 function AttackPhase(attacktype)
 {
@@ -551,19 +548,11 @@ function AttackPhase(attacktype)
 	    //Player is dead
 	    if(player.health < 0)
 	    {
-	    	if(curRoom.enemy.name == "Harambe" && playerdead == 1)
-	    	{
-	    		$("<p> "+ curRoom.enemy.name + " has defeated "+player.className+"!</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
-	    	}
-	    	else
-	    	{
-	    		$("<p> "+ curRoom.enemy.name + " has defeated "+player.className+"!</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
-	    		$("<p>Your tale ends here in "+curRoom.name+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
-	    		$("<p>Please refresh the page to start anew...</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
-	    		
-	    		document.getElementById("form-input").style.display = "none";
-	    	}
-	        playerdead = 1;
+    		$("<p> "+ curRoom.enemy.name + " has defeated "+player.className+"!</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
+    		$("<p>Your tale ends here in "+curRoom.name+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
+    		$("<p>Please refresh the page to start anew...</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
+    		
+    		document.getElementById("form-input").style.display = "none";    	
 	    }              	
     }
 }
