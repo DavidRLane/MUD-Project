@@ -1,4 +1,27 @@
 /*Ctr + f5 = refresh page resources*/
+body{
+	background-image:url("http://bin.smwcentral.net/u/15090/Donkey%2BKong%2BCountry%2B0003.png");
+	height:100%;
+	width:100%;
+}
+#top, #bottom, #left, #right {
+	background: #3E8F3E;
+	position: fixed;
+	}
+	#left, #right {
+		top: 0; bottom: 0;
+		width: 15px;
+		}
+		#left { left: 0; }
+		#right { right: 0; }
+		
+	#top, #bottom {
+		left: 0; right: 0;
+		height: 15px;
+		}
+		#top { top: 0; }
+		#bottom { bottom: 0; }
+		
 #wrapper{
 	background-color:#CCCCCC;
 	width:1100px;
@@ -39,7 +62,7 @@
 }
 .user-space{
 	background-color:#CCCCCC;
-	height:520px;
+	height:600px;
 	width:580px;
 	border:1px solid black;
 	font:16px/26px Georgia;
@@ -52,7 +75,7 @@
 .user-map{
 	background-color:#CCCCCC;
 	border:1px solid black;
-	height:520px;
+	height:600px;
 	width:240px;
 	padding:10px;
 	float:left;
@@ -60,7 +83,7 @@
 .user-inv{
 	background-color:#CCCCCC;
 	border:1px solid black;
-	height:520px;
+	height:600px;
 	width:240px;
 	padding:10px;
 	float:left;

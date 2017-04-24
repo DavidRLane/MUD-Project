@@ -20,10 +20,6 @@
 			{
 				require_once("frontend/pages/register.php");	
 			}
-			elseif($page == "servertesting")
-			{
-				require_once("frontend/pages/servertesting.php");	
-			}
 			elseif($page == "logout")
 			{
 				session_destroy();

@@ -31,7 +31,7 @@
 	if($rowcount >= 1)
 	{
 		echo "This is already an user with this username";
-		header("refresh:2;url=../../index.php?page=register");
+		header("refresh:5;url=../../index.php?page=register");
 		die();
 	}
 	else
@@ -43,8 +43,8 @@
 		//EXECUTE QUERY
 		if($conn->query($sql) == TRUE)
 		{
-			echo "Account has been added successfully: ".$username." ".$password." ".$email;
-			header("refresh:2;url=../../index.php?page=register");
+			echo "Account has been added successfully: ".$username;
+			header("refresh:5;url=../../index.php?page=register");
 			die();
 		}
 		else

@@ -6,6 +6,10 @@
 ?>
 <!DOCTYPE html>
 <html>
+	<div id="left"></div>
+	<div id="right"></div>
+	<div id="top"></div>
+	<div id="bottom"></div>
 	<head>
 		<title><?php echo $title.$seperator.$description ?></title>
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -100,30 +104,46 @@
 							 	
 							 	<div class="user-space">
 							 		<div id="class-options" style="text-align: center; margin-top:10px;">
-							 			<button id="warButton" title="Warrior" onClick="">Warrior</button>
-							 			<button id="wizButton" title="Wizard" onClick="">Wizard</button>
-							 			<button id="rogButton" title="Rogue" onClick="">Rogue</button>
+							 			<button id="rogButton" title="Short and sharp Knife, fitting for Rogues." onClick="">Dagger</button>
+							 			<button id="warButton" title="Large and blunt Club, typical of a Warrior." onClick="">Club</button>
+							 			<button id="wizButton" title="Finely crafted Staff, standard for any Wizard." onClick="">Staff</button>
 							 		</div>
 							 		<div id="adventure-log">
 							 			<h2 style="text-align: center"><strong>Adventure Log</strong></h2>	
-							 			<p id="message_startgame">
-							 				The Adventure Begins!
-							 				Let's start with creating your character. 
-							 				The available classes are listed above,
-							 				press the button above of the class you want to be.
-							 				For more info, hover your cursor over the button"</strong>. 
+							 			<p id="message-startgame">
+							 				You have traveled for some time along the beaten path, 
+							 				and it appears you have arrived at the cave.
+							 				Gathering yourself for yet another adventure,
+							 				you check your bags one final time before stepping any further.
+							 				Speaking of which, what exactly do you have in your bag...?
+							 				<p id="message-startgame-button"><strong>(Hover over the buttons for more info)</strong></p> 
 							 			</p>							 			
-							 															 			
-							 			<p id="help_command" style="display:none">
-							 				For a list of commands, you can type <strong>"-help"</strong> below.
-							 			</p>							 			
-							 			<p><span id="message_help" style="display:none;">
-						 					<strong>List of Commands: </strong>							 				
-						 					go [direction] = move in the direction entered.
-						 					take [item] = take an item that is obtainable.
-						 					use [item] = use the item in the room, if possible.
-						 					equip [weapon or armor] = equip the item, boosting your stats or decreasing them.		 				
-							 			</span></p>
+							 			<div id="message_help" style="display:none;">
+						 					<p><strong>All Commands must be entered in 'lowercase'. Valid items will be in 'UPPERCASE LETTERS'.</strong>		
+						 					<p><strong>talk to harambe = </strong>Harambe will help you by giving you some information about the current room.</p>
+						 						<p><strong>Ex: "talk to harambe" = </strong>There is a loose stone tile in this room, Ook Ook!</p>
+						 					
+						 					<p><strong>look around = </strong>take a second glance around the room, redisplay description.</p>
+						 						<p><strong>Ex: "look around" = </strong>The jungle floor is barren...</p>
+						 					
+						 					<p><strong>look at [item/object] = </strong>look closely at an item or object, revealing more details.</p>					 				
+						 						<p><strong>Ex: "look at knife" = </strong>The knife gleams with a sinister glow, it looks like you can pick it up.</p>
+						 					
+						 					<p><strong>go [direction] = </strong>move in the direction entered.</p>
+						 						<p><strong>Ex: "go north" = </strong>You enter the northern room.</p>
+						 					
+						 					<p><strong>take [item] = </strong>take an item that is obtainable.</p>
+						 						<p><strong>Ex: "take knife" = </strong>You pick up the knife and put it in your bag.</p>
+						 					
+						 					<p><strong>use [item] = </strong>use the item in the room or in your inventory, if possible.</p>
+						 						<p><strong>Ex: "use key" = </strong>You used the key on the door.</p>
+						 					
+						 					<p><strong>equip [weapon or armor] = </strong>equip the item, boosting your stats or decreasing them.</p>		 				
+							 					<p><strong>Ex: "equip steel helmet" = </strong>You put on the steel helmet.</p>
+							 				
+							 				<p><strong>attack = </strong>attack the enemy in the room, if there is one.</p>		 				
+							 					<p><strong>Ex: "attack" = </strong>You strike at the target for 25 damage!</p>
+							 			</div>
 							 			<p id="room_description"></p>
 							 			
 							 			<script type="text/javascript" src="system/scripts/functions_and_variables.js"></script>

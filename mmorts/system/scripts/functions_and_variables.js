@@ -9,6 +9,19 @@ var players = function(className,health,magic,defense,attack,stats,inv) {
     //0=Str, 1=Dex, 2=Con, 3=Int, 4=Wis, 5=Cha
     this.stats = stats;
     this.inv = inv;
+    this.equippedWep = true;
+    this.equippedArm = true;
+    
+    //Find an Inv Item
+    this.findItem = function(item){
+    	for(var i=0; i<this.inv.length; i++){
+    		if(this.inv[i].name == item){
+	    		if(this.inv[i].equipped == true)
+	    			return true;
+    		}
+    	}
+    	return false;
+    };
     
     //Use an Item
     this.useItem = function(item){
@@ -24,24 +37,81 @@ var players = function(className,health,magic,defense,attack,stats,inv) {
     	}
     	return false;
     };
+    //Equip an Item if the Object can be Equipped
     this.equipItem = function(item){
-    	if(item.weapon == true){
-    		player.attack += item.stats;
-    		
-    		item.weapon = false;
-    		
-    		return true;
+    	//Check if the Item is actually in the Player's Inventory
+    	for(var i=0; i<this.inv.length; i++){
+    		if(this.inv[i].name == item){
+    			if(this.inv[i].weapon == true && this.inv[i].equipped == false){
+		    		if(this.equippedWep == false){
+		    			player.attack += this.inv[i].stats;
+			    		
+			    		//Change Item Settings
+			    		this.inv[i].equipped = true;
+			    		this.equippedWep = true;
+			    		return true;	
+		    		}
+		    	}
+		    	else if(this.inv[i].armor == true && this.inv[i].equipped == false){
+		    		if(this.equippedArm == false){
+		    			player.stats += this.inv[i].stats;
+			    		
+			    		//Change Item Settings
+			    		this.inv[i].equipped = true;
+			    		this.equippedArm = true;
+			    		return true;	
+		    		}
+		    	}
+		    	else if(this.inv[i].ring == true && this.inv[i].equipped == false){
+		    		//Change Item Settings
+		    		this.inv[i].equipped = true;
+		    		
+		    		return true;
+		    	}
+		    	else{
+		    		return false;
+		    	}
+    		}
     	}
-    	else if(item.armor == true){
-    		player.stats += item.stats;
-    		
-    		item.armor = false;
-    		
-    		return true;
+    	return false;
+    };
+    //Unequip an Item if it is Equipped
+    this.unequipItem = function(item){
+    	//Check if the Item is actually in the Player's Inventory
+    	for(var i=0; i<this.inv.length; i++){
+    		if(this.inv[i].name == item){
+    			if(this.inv[i].weapon == true && this.inv[i].equipped == true){
+		    		if(this.equippedWep == true){
+		    			player.attack -= this.inv[i].stats;
+			    		
+			    		//Change Item Settings
+			    		this.inv[i].equipped = false;
+			    		this.equippedWep = false;
+			    		return true;	
+		    		}		    		
+		    	}
+		    	else if(this.inv[i].armor == true && this.inv[i].equipped == true){
+		    		if(this.equippedArm == true){
+		    			player.stats -= this.inv[i].stats;
+			    		
+			    		//Change Item Settings
+			    		this.inv[i].equipped = false;
+			    		this.equippedArm = false;
+			    		return true;	
+		    		}
+		    	}
+		    	else if(this.inv[i].ring == true && this.inv[i].equipped == true){
+		    		//Change Item Settings
+		    		this.inv[i].equipped = false;
+		    		
+		    		return true;
+		    	}
+		    	else{
+		    		return false;
+		    	}
+    		}
     	}
-    	else{
-    		return false;
-    	}
+    	return false;
     };
     //Add to Inv
     this.addItem = function(item){
@@ -54,11 +124,18 @@ var players = function(className,health,magic,defense,attack,stats,inv) {
     			//Change Pick Up Setting
     			this.inv[i].pickUp = true;
     			
-    			if(this.inv[i].weapon == true){
+    			if(this.inv[i].weapon == true && this.inv[i].equipped == true){
     				player.attack -= this.inv[i].stats;
+    				this.inv[i].equipped = false;
+    				this.equippedWep = false;
     			}
-    			if(this.inv[i].armor == true){
+    			if(this.inv[i].armor == true && this.inv[i].equipped == true){
     				player.defense -= this.inv[i].stats;
+    				this.inv[i].equipped = false;
+    				this.equippedArm = false;
+    			}
+    			if(this.inv[i].ring == true && this.inv[i].equipped == true){
+    				this.inv[i].equipped = false;
     			}
     			
     			//Switch from Player to Room Inventory
@@ -73,71 +150,80 @@ var players = function(className,health,magic,defense,attack,stats,inv) {
 };
 
 //Monster Stats
-var monsters = function(health,defense,attack) {
+var monsters = function(name,health,defense,attack,dead) {
+    this.name = name;
     this.health = health;
     this.defense = defense;
     this.attack = attack;
+    this.dead = dead;
 };
+//Harambe Help for each Room
+var harambeOptions = [
+	"You should try looking at the '-help' command before moving forward, Ook Ook!",
+	"That sign looks important, perhaps you should give it a look, Ook, Ook!",
+	"Looks like the door to the EAST is locked, maybe you should look around for a way to unlock it, Ook, Ook!",
+	"Precious object lies within the dummy that you will need later, Ook, Ook! Sometimes violence is the only answer, Ook, Ook!",
+	"Looks like you may need to wear something to get through here, Ook, Ook!",
+	"I'm not letting you through unless you drop that RING, Ook, Ook! It's my special ring, OOK, OOK!",
+	"This is our final battle...Ook, Ook!",
+	"I don't like this place, Ook..."
+];
+
 //Monster Types
-var testMon = new monsters(0,0,0);
-var Harambe = new monsters(200,20,20);
-var goblin = new monsters(50,5,6);
-var skeleton = new monsters(100,5,6);
-var ogre = new monsters(150,5,6);
-var monstername;
-//Selected Monster
-var selectedmonster = testMon;
+var dummy = new monsters("Dummy",50,2,5,false);
+var Harambe = new monsters("Harambe",500,999,0,false);
+
+/*
+ * First time attacking Harambe he says: So it's treason then...
+ * 
+ * Combat for Harambe: Harambe thrashes you around like a small child for DAMAGE.
+ */
 
 //Item Class
-var Items = function(name,use,pick,weap,arm,desc,stats,equip){
+var Items = function(name,equipped,use,pick,weap,arm,ring,desc,stats,equip){
 	//Constructor
 	this.name = name;
+	this.equipped = equipped;
 	this.useable = use;
 	this.pickUp = pick;
 	this.weapon = weap;
 	this.armor = arm;
+	this.ring = ring;
 	this.desc = desc;
 	this.stats = stats;
-	
-	//Functions
-	this.changeDesc = function(newDesc){
-		this.desc = newdesc;
-	};
-	this.changeSettings = function(newUse,newPick,newWeap,newArm){
-		this.useable = newUse;
-		this.pickUp = newPick;
-		this.weapon = newWeap;
-		this.armor = newArm;
-	};
 };
 //List of Items
-var sword = new Items("sword",false,true,true,false,"Rusty Sword",5,false);
-var club = new Items("club",false,true,true,false,"Basic Club",3,true);
-var leatherArmor = new Items("leather armor",false,false,false,true,"Basic Leather Armor",2,true);
-var key = new Items("key",true,true,false,false,"Rusty Key",0,false);
-var stone_key = new Items("stone key",true,true,false,false,"Stone Key to get inside the Temple",0,false);
+//Weapons
+var dagger = new Items("dagger",true,false,true,true,false,false,"Steel DAGGER",10,false);
+var club = new Items("club",true,false,true,true,false,false,"Basic CLUB",6,false);
+var staff = new Items("staff",true,false,true,true,false,false,"Wooden STAFF",4,false);
+var rifle = new Items("rifle",false,false,true,true,false,false,"+1 Ape Blaster of Gorilla Bane, reliable RIFLE by trusted Hunters",9999,false);
+//Armor
+var leatherArmor = new Items("leather armor",true,false,false,false,true,false,"Basic LEATHER ARMOR",2,true);
+var steelArmor = new Items("steel armor",true,false,false,false,true,false,"Shiny STEEL ARMOR",4,true);
+var clothRobe = new Items("cloth robe",true,false,false,false,true,false,"Fine CLOTH ROBE",1,true);
+//Misc Items
+var key = new Items("key",false,true,true,false,false,false,"KEY from the portrait of Doctor Zaius",0,false);
+var ring = new Items("ring",false,true,true,false,false,true,"Special RING radiating with some sort of enery",0,true);
 
 //Player Inventory
-var playerInv = [club,leatherArmor];
-var roomInv = [sword,key];
-var room_0Inv = [stone_key];
-
-/* First room = Hall of Champions; choose class
- * then teleported to Jungle Clearing, with Harambe
- * 
- * Harambe enters from the west, secret room
- * not described after initial encounter
- * 
- * Harambe follows player through rooms
- * Harambe will give hints to players with "Tell Harambe Help"
- */
+//Default Inv
+var playerInv = [];
+//Class Inv
+var rogInv = [dagger,leatherArmor];
+var warInv = [club,steelArmor];
+var wizInv = [staff,clothRobe];
+//Room Inventory
+//Default Inv
+var roomInv = [];
+var room7Inv = [rifle];
 
 //Room Class
 var Rooms = function(name,desc,item,roomNum,exit){
 	//Constructor
 	this.name = name;
 	this.desc = name + ": " + desc;
-	this.enemy = testMon;
+	this.enemy = dummy;
 	this.item = item;
 	this.roomNum = roomNum;
 	this.exit = exit;
@@ -157,8 +243,16 @@ var Rooms = function(name,desc,item,roomNum,exit){
 	this.roomDesc = function(){
 		var temp = this.desc;
 		for(var i=0; i<this.item.length; i++){
-			temp = this.desc + " " +
-			this.item[i].desc + " on the ground of " + this.name+ ".";	
+			if(this.item[i].name[0] == 'a' || this.item[i].name[0] == 'A'){
+				temp = temp + " An " +
+					this.item[i].desc + 
+					" lies on the ground.";	
+			}
+			else{
+				temp = temp + " A " +
+					this.item[i].desc + 
+					" lies on the ground.";
+			}
 		}
 		return temp;
 	};
@@ -194,6 +288,14 @@ var Rooms = function(name,desc,item,roomNum,exit){
 		}
 		return false;
 	};
+	this.checkInRoom = function(item){
+		for(var i=0; i<this.item.length; i++){
+			if(this.item[i].name == item){
+				return true;
+			}
+		}
+		return false;
+	};
 	this.checkExit = function(direction,exit){
 		for(var i=1; i<exit.length; i+=2){
 			if(direction == this.exit[i]){
@@ -212,14 +314,14 @@ var roomDescs = [
 	   "Dense tall grass surrounds the area. "+
 	   "The entrance to a mysterious cave looms to the NORTH.",
 	//Room 1
-	"An ornate door is built into the NORTH wall of the cave entrance. "+
+	"An ornate DOOR is built into the NORTH wall of the cave entrance. "+
 	   "A small crudely written SIGN is nailed to the front of the door. "+
 	   "A small potted sunflower sits in the corner of the entrance.",
 	//Room 2
 	"This room is a mess of furniture and old banana peels. "+
 	   "A large wooden dining table takes up most of the middle of the room, "+
 	   "with chairs, rugs, and bookshelves taking up the rest. "+
-	   "An empty fruit BOWL rests at the center of the dining table. "+
+	   "An empty fruit bowl rests at the center of the dining table. "+
 	   "A grand PORTRAIT of Doctor Zaius hangs on the north wall. "+
 	   "The cave entrance door leads to the SOUTH. "+
 	   "Another door leads to the EAST.",
@@ -227,7 +329,7 @@ var roomDescs = [
 	"You stand in an immaculately clean room. "+
 	   "Paper walls surround a bamboo mat floor. "+
 	   "A smoldering lantern hangs from a wooden beam crossing the ceiling. "+
-	   "A cheesed off looking target dummy is propped up in the center of the room. "+
+	   "A cheesed off looking target DUMMY is propped up in the center of the room. "+
 	   "A door leads WEST. "+
 	   "A sliding paper door leads NORTH.",
 	//Room 4
@@ -240,32 +342,28 @@ var roomDescs = [
 	   "It shimmers and pulses as you draw closer to it. "+
 	   "You feel as if passing through the field would harm you so you decide not to. "+
 	   "It blocks off the EAST side of the room. "+
-	   "Harambe blocks off an exit to the WEST. "+
-	   "A small wooden BOX with an attached post-it NOTE sits on a stone slab off to one side of the room.",
+	   "Harambe blocks off an exit to the WEST. ",
 	//Room 6
-	"You stand before three large marble statue of different champions. "+
-	   "The WIZARD holds a staff and wears a pointed starfield hat. "+
-	   "The FIGHTER lifts a sword up to the ceiling and carries a helmet under his arm. "+
-	   "The CLERIC has a pool of burning oil in the palm of her hand and is giving a pleasent smile. "+
-	   "Marble pillars jut out of the walls at each corner of the room, "+
-	   "holding up the domed ceiling that is painted with the constellations. "+
-	   "A dark iron door leads to the NORTH. "+
-	   "An passageway leads to the EAST.",
+	"Tall cement walls surround you. "+
+		"You stand before an audience of humans watching you from the railings above. "+
+		"The grass on the floor is bloody. "+
+		"Harambe looks at you menacingly, as if you were a banana.",
 	//Room 7
 	"Beyond the tall grass is a secret Gorilla Patch. "+
 	   "A giant banana tree extends from the center of the patch into the sky. "+
 	   "Leaning on the tree is a strange OBJECT. "+
 	   "A break in the tall grass leads to the EAST."];
 //Create other Rooms for map
-var room_0 = new Rooms("Jungle Clearing",roomDescs[0],room_0Inv,0,new Array(7,"E"));
-var room_1 = new Rooms("Tunnel Entrance",roomDescs[1],roomInv,1,new Array(0,"S",2,"N"));
-var room_2 = new Rooms("Ape Den",roomDescs[2],roomInv,2,new Array(1,"S",3,"E"));
+var room_0 = new Rooms("Jungle Clearing",roomDescs[0],roomInv,0,new Array(7,"W",1,"N"));
+var room_1 = new Rooms("Tunnel Entrance",roomDescs[1],roomInv,1,new Array(0,"S"));
+var room_2 = new Rooms("Ape Den",roomDescs[2],roomInv,2,new Array(1,"S"));
 var room_3 = new Rooms("Dojo",roomDescs[3],roomInv,3,new Array(2,"W",4,"N"));
-var room_4 = new Rooms("Forcefield Room",roomDescs[4],roomInv,4,new Array(3,"S",5,"W"));
-var room_5 = new Rooms("Treasure Depository",roomDescs[5],roomInv,5,new Array(4,"E",6,"E"));
-var room_6 = new Rooms("Hall of Champions",roomDescs[6],roomInv,6,new Array(5,"E"));
-var room_7 = new Rooms("Secret Gorilla Patch",roomDescs[7],roomInv,7,new Array(0,"E"));
+var room_4 = new Rooms("Forcefield Room",roomDescs[4],roomInv,4,new Array(3,"S"));
+var room_5 = new Rooms("Treasure Depository",roomDescs[5],roomInv,5,new Array());
+var room_6 = new Rooms("Harambe's Lament",roomDescs[6],roomInv,6,new Array());
+var room_7 = new Rooms("Secret Gorilla Patch",roomDescs[7],room7Inv,7,new Array(0,"E"));
 room_7.setSecret();
+room_6.enemy = Harambe;
 
 //Current Room; default Room 0
 var curRoom = room_0;
@@ -273,37 +371,44 @@ room_0.setRoom();
 
 //Starting Player Class
 var startStats = [1,1,1,1,1,1];
-var startPlayer = new players("Citizen",100,25,1,1,startStats,playerInv);
+var startPlayer = new players("Unknown",100,25,1,1,startStats,playerInv);
 var player = startPlayer;
 
+var HarambeHelp = function(roomNum){
+	$("<p>" + harambeOptions[roomNum] + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);       
+};
 
 var gameSetup = function(className){
-	$("<p>Class Created: " + className + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+	$("<p>That's right, you packed your trusty "+player.inv[0].name+" for this trip. "+
+	"How could you call yourself a "+className+" without your "+player.inv[0].name+"?</p>").hide().insertBefore("#placeholder").fadeIn(1000);
             
     document.getElementById("form-input").style.display = null;
-    document.getElementById("help_command").style.display = null;
     
-    document.getElementById("message_startgame").style.display = "none";
+    document.getElementById("message-startgame").style.display = "none";
+    document.getElementById("message-startgame-button").style.display = "none";
     document.getElementById("warButton").style.display = "none";
     document.getElementById("wizButton").style.display = "none";
     document.getElementById("rogButton").style.display = "none";
     
-	$("<p>" + curRoom.roomDesc() + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+	$("<p>" + curRoom.roomDesc() + 
+	" A mysterious gorilla approaches from the west with an armband reading a name: Harambe. "+
+	"He looks at you with an inquisitive expression, awaiting your response...</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+	$("<p>For a list of commands, you can type <strong>'-help'.</strong></p>").hide().insertBefore("#placeholder").fadeIn(1000);    
 };
 
 //Class Buttons; Sets Class and reveals Textbox
-document.getElementById("warButton").onclick = function(){	
-    var stats = [3,1,1,1,1,1];
-    player = new players("Warrior",400,50,10,10,stats,playerInv);
+document.getElementById("rogButton").onclick = function(){
+	var stats = [12,18,12,8,12,14];  
+    player = new players("Rogue",300,75,6,12,stats,rogInv);
 
     gameSetup(player.className);
     
     displayStats(player);
     displayInv(player);
 };
-document.getElementById("rogButton").onclick = function(){
-	var stats = [1,3,1,1,1,1];  
-    player = new players("Rogue",300,75,8,6,stats,playerInv);
+document.getElementById("warButton").onclick = function(){	
+    var stats = [18,14,12,8,8,10];
+    player = new players("Warrior",400,50,8,10,stats,warInv);
 
     gameSetup(player.className);
     
@@ -311,8 +416,8 @@ document.getElementById("rogButton").onclick = function(){
     displayInv(player);
 };
 document.getElementById("wizButton").onclick = function(){
-	var stats = [1,1,1,3,1,1];	
-    player = new players("Wizard",250,150,5,5,stats,playerInv);
+	var stats = [8,12,8,18,14,12];	
+    player = new players("Wizard",250,150,5,8,stats,wizInv);
 
     gameSetup(player.className);
     
@@ -345,8 +450,14 @@ var displayInv = function(player){
     );
 	//Load in new Inv
 	for(var i=0; i<player.inv.length; i++){
-		$("<p>"+player.inv[i].name.charAt(0).toUpperCase()+
-		player.inv[i].name.slice(1)+"</p>").hide().insertBefore("#item-placeholder").fadeIn(1000);
+		if(player.inv[i].equipped == true){
+			$("<p>[E] "+player.inv[i].name.charAt(0).toUpperCase()+
+			player.inv[i].name.slice(1)+"</p>").hide().insertBefore("#item-placeholder").fadeIn(1000);	
+		}
+		else{
+			$("<p>"+player.inv[i].name.charAt(0).toUpperCase()+
+			player.inv[i].name.slice(1)+"</p>").hide().insertBefore("#item-placeholder").fadeIn(1000);
+		}
 	}
 };
 function showMap(){
@@ -359,58 +470,102 @@ function showMap(){
 }
 
 //Battle Variables
-var monsterdead = 0;
 var playerdead = 0;
 
 //Attack Function
 function AttackPhase(attacktype)
 {
-    $("<p>Combat Initiated!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-    $("<p> " + monstername + "'s Health is " + selectedmonster.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-    $("<p>" + player.className + "'s Health is " + player.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-  
-    //Player Turn
-    if(attacktype == "normal")
+    if(curRoom.enemy.dead == true)
     {
-        $("<p>Player attacks for " + Math.ceil(Math.random(player.attack)*10+player.stats[0]) + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);       
-        selectedmonster.health = selectedmonster.health - Math.ceil(Math.random(player.attack)*10+player.stats[0]-selectedmonster.defense);
-        $("<p> " + monstername + "'s Health is now " + selectedmonster.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+		$("<p>The enemy is already dead.</p>").hide().insertBefore("#placeholder").fadeIn(1000);		
     }
-    else if(attacktype == "spell")
+    else
     {
-        $("<p>Player attacks for " + Math.ceil(Math.random(8)*10+player.INT) + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);       
-        selectedmonster.health = selectedmonster.health - Math.ceil(Math.random(8)*10+player.stats[3]);
-        $("<p> " + monstername + "'s Health is now " + selectedmonster.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+    	$("<p>" + curRoom.enemy.name + "'s Health is currently at " + curRoom.enemy.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+    
+	    //Player Turn
+	    if(attacktype == "normal")
+	    {
+	    	var normDam = Math.ceil(Math.random(player.stats[0])*10+player.attack);
+	        $("<p>"+player.className+" attacks for " + normDam + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);       
+	        
+	        curRoom.enemy.health = curRoom.enemy.health - normDam + curRoom.enemy.defense;
+	        $("<p> " + curRoom.enemy.name + " is hit and suffers " + (normDam-curRoom.enemy.defense) + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+	    }
+	    else if(attacktype == "spell")
+	    {
+	    	var spellDam = Math.ceil(Math.random(8)*10+player.stats[3]);
+	        $("<p>Player attacks for " + spellDam + "</p>").hide().insertBefore("#placeholder").fadeIn(1000); 
+	              
+	        curRoom.enemy.health = curRoom.enemy.health - spellDam;
+	        $("<p> " + monstername + " is hit and suffers " + spellDam + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+	    }
+	
+	    //Monster is Dead
+	    if (curRoom.enemy.health < 0)
+	    {
+	    	curRoom.enemy.dead = true;
+			$("<p>" + player.className + " has defeated "+curRoom.enemy.name+"!</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+		        
+	    	if(curRoom.enemy.name == "Dummy")
+	    	{
+	    		$("<p>A strange RING has dropped to the floor from the straw guts of the DUMMY!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+		        curRoom.addItem(ring);	
+	    	}
+	    	else
+	    	{
+	    		$("<p>You violent actions have pleased the crowd, but you feel remorse in the fall of your newly acquired friend. "+
+	    		"The doors open to the north, revealing an inner chamber glowing red and readiating intense heat. "+
+	    		"Your mind tells you to turn back, run away from this hellish place, but your body is drawn to the chamber. "+
+	    		"Your legs move you forward and the red glow of the chamber soon engulfs your body...</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+			
+				$("<p>Take you for playing! The tale will continue in Part 2, but only through your support! "+
+				"Give me your money right now and I will make more content, otherwise I will rest on my laurels. >:] </p>").hide().insertBefore("#placeholder").fadeIn(1000);
+		        
+		        document.getElementById("form-input").style.display = "none";
+			}
+	        
+	    }
+	    else 
+	    {
+	    	if(curRoom.enemy.name == "Dummy")
+	    	{
+	    		//Monster's Turn
+		        var monDam = Math.ceil(Math.random(curRoom.enemy.attack)+10);
+		        $("<p>"+curRoom.enemy.name+" smacks you upside the head for " + monDam + "!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+		        
+		        player.health = player.health - monDam + player.defense;
+		        $("<p>" + player.className + " is smacked for " + (monDam-player.defense)+ "</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
+	    	}
+	    	else
+	    	{
+				//Monster's Turn
+		        var monDam = Math.ceil(Math.random(curRoom.enemy.attack)+10);
+		        $("<p>"+curRoom.enemy.name+" thrashes you around like a small child for " + monDam + "!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+		        
+		        player.health = player.health - monDam + player.defense;
+		        $("<p>" + player.className + " has been thoroughly tossed around for " + (monDam-player.defense)+ "</p>").hide().insertBefore("#placeholder").fadeIn(1000);		    		
+	    	}
+	            
+	    }       
+	    //Player is dead
+	    if(player.health < 0)
+	    {
+	    	if(curRoom.enemy.name == "Harambe" && playerdead == 1)
+	    	{
+	    		$("<p> "+ curRoom.enemy.name + " has defeated "+player.className+"!</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
+	    	}
+	    	else
+	    	{
+	    		$("<p> "+ curRoom.enemy.name + " has defeated "+player.className+"!</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
+	    		$("<p>Your tale ends here in "+curRoom.name+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
+	    		$("<p>Please refresh the page to start anew...</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
+	    		
+	    		document.getElementById("form-input").style.display = "none";
+	    	}
+	        playerdead = 1;
+	    }              	
     }
-    else if(attacktype == "buff")
-    {
-        $("<p>Player heals for " + Math.ceil(Math.random(player.WIS)*10+8) + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);       
-        player.health = player.health + Math.ceil(Math.random(player.stats[4])*10+8);
-        $("<p> " + player.className + "'s Health is now " + player.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
-    }
-
-    //Monster is Dead
-    if (selectedmonster.health < 0)
-    {
-        monsterdead = 1;
-        battle = 0;
-        $("<p>" + player.className + " has won!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-    }
-    else 
-    {
-        //Monster's Turn
-        $("<p>Monster Attacks!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-        
-        player.health = player.health - Math.ceil(Math.random(selectedmonster.str)+10-player.defense);
-        $("<p>" + player.className + "'s Health is now " + player.health + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
-    }       
-    //Player is dead
-    if(player.health < 0)
-    {
-        playerdead = 1;
-        battle = 0;
-        $("<p> "+ monstername + " has won!</p>").hide().insertBefore("#placeholder").fadeIn(1000);   
-    }                     
 }
 
 //Map Movement
@@ -472,7 +627,7 @@ function moveMap(direction)
     }
     else if(direction == "west")
     {
-        if(curRoom.checkExit("W",curRoom.exit) == true)
+        if(curRoom.checkExit("W",curRoom.exit) == true || curRoom.roomNum == 4 || curRoom.roomNum == 5)
         {
         	if(curRoom.roomNum == 0)
         	{
@@ -486,13 +641,30 @@ function moveMap(direction)
         	}
         	else if(curRoom.roomNum == 4)
         	{
-        		curRoom = room_5;
-        		room_5.switchRooms(room_4);
+        		if(player.findItem("ring") == true)
+        		{
+        			curRoom = room_5;
+    	    		room_5.switchRooms(room_4);
+	        	}
+        		else
+        		{
+        			return false;	
+        		}
         	}
         	else if(curRoom.roomNum == 5)
         	{
-        		curRoom = room_6;
-        		room_6.switchRooms(room_5);
+        		if(player.findItem("ring") == false)
+        		{
+        			curRoom = room_6;
+    	    		room_6.switchRooms(room_5);
+    	    		curRoom.item = new Array();
+    	    		room_6.item = new Array();
+	        		$("<p>The door closes behind you with no indication of escaping. Harambe moves to the center of the room facing you.</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
+        		}
+        		else
+        		{
+        			return false;	
+        		}			
         	}
         	$("<p> "+ curRoom.roomDesc() + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);
         	return true;
@@ -504,7 +676,7 @@ function moveMap(direction)
     }
     else if(direction == "east")
     {
-        if(curRoom.checkExit("E",curRoom.exit) == true)
+        if(curRoom.checkExit("E",curRoom.exit) == true || curRoom.roomNum == 5)
         {
         	if(curRoom.roomNum == 7)
         	{
@@ -518,8 +690,15 @@ function moveMap(direction)
         	}
         	else if(curRoom.roomNum == 5)
         	{
-        		curRoom = room_4;
-        		room_4.switchRooms(room_5);
+        		if(player.findItem("ring") == true)
+        		{
+        			curRoom = room_4;
+    	    		room_4.switchRooms(room_5);
+	        	}
+        		else
+        		{
+        			return false;	
+        		}
         	}
         	else if(curRoom.roomNum == 6)
         	{

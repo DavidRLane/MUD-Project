@@ -35,13 +35,13 @@
 		$_SESSION['loggedin'] = $username;
 		echo $_SESSION['loggedin'];
 		
-		header("refresh:2;url=../../index.php?page=index");
+		header("refresh:5;url=../../index.php?page=index");
 		die();
 	}
 	else
 	{
 		echo "The details you entered are not found in the database";
-		header("refresh:2;url=../../index.php?page=login");
+		header("refresh:5;url=../../index.php?page=login");
 		die();	
 	}
 ?>

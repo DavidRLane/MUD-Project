@@ -5,6 +5,11 @@
 	global $logo;
 ?>
 <html>
+	<div id="left"></div>
+	<div id="right"></div>
+	<div id="top"></div>
+	<div id="bottom"></div>
+	
 	<head>
 		<title><?php echo $title.$seperator.$description; ?></title>
 		<link href = "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">

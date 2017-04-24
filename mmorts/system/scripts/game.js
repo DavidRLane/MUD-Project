@@ -13,7 +13,10 @@ $(document).ready(function()
     
     	var itemName = input.slice(5);
         var usePlayerItem = input.slice(4);
-        
+        var equipItem = input.slice(6);
+        var unequipItem = input.slice(8);
+        var lookItem = input.slice(8);
+
         //Check Command
         function checkFunc() 
         {
@@ -28,6 +31,13 @@ $(document).ready(function()
         {
             $("#message_help").clone().hide().insertBefore("#placeholder").fadeIn(1000);       
             checkFunc();
+        }
+        
+        //Harambe Help Command
+        else if(input == "talk to harambe")
+        {
+        	HarambeHelp(curRoom.roomNum);
+        	checkFunc();
         }
         
         //Goto Commands
@@ -87,25 +97,25 @@ $(document).ready(function()
         //Attack Command
         else if(input == "attack")
         {   
-            $("<p>Normal Strike!</p>").hide().insertBefore("#placeholder").fadeIn(1000); 
-            AttackPhase("normal");
-            checkFunc();
+        	if(curRoom.roomNum == 3 || curRoom.roomNum == 6)
+        	{
+        		$("<p>You strike at the target with your weapon!</p>").hide().insertBefore("#placeholder").fadeIn(1000); 
+	            AttackPhase("normal");
+	            displayStats(player);
+	            checkFunc();	
+        	}
         }
         
         //Spells
         else if(input == "frost ray")
         {
-            $("<p>Frost Ray!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-            AttackPhase("spell");
-            checkFunc();
-        }
-        
-        //Buffs
-        else if(input == "cure light wounds")
-        {
-            $("<p>Cure Light Wounds</p>").hide().insertBefore("#placeholder").fadeIn(1000);
-            AttackPhase("buff");
-            checkFunc();
+            if(curRoom.roomNum == 3)
+        	{
+        		$("<p>You strike at the target with your magic!</p>").hide().insertBefore("#placeholder").fadeIn(1000); 
+	            AttackPhase("spell");
+	            displayStats(player);
+	            checkFunc();	
+        	}
         }
         
         //Equip Command
@@ -113,7 +123,20 @@ $(document).ready(function()
         {
             if(player.equipItem(equipItem) == true)
             {
-                $("<p>You equipped the "+equipName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                $("<p>You equipped the "+equipItem+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                displayStats(player);
+                displayInv(player);
+                checkFunc();    
+            }        	
+        }
+        //Unequip Command
+       	else if(input == "unequip "+unequipItem)
+        {
+            if(player.unequipItem(unequipItem) == true)
+            {
+                $("<p>You unequipped the "+unequipItem+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                displayStats(player);
+                displayInv(player);
                 checkFunc();    
             }        	
         }
@@ -123,6 +146,40 @@ $(document).ready(function()
         {
             $("<p> "+ curRoom.roomDesc() + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);
             checkFunc();
+        }
+        
+        //Look Command; Closer Look at Specific Objects
+        else if(input == "look at "+lookItem)
+        {
+        	//Sign Description in Room 1
+        	if(lookItem == "sign" && curRoom.roomNum == 1)
+        	{
+        		$("<p> The sign says: 'You can USE things that aren't in your inventory, try opening this door with the USE command'.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+            	checkFunc();
+        	}
+        	//Sign Description in Room 1
+        	else if(lookItem == "portrait" && curRoom.roomNum == 2)
+        	{
+        		$("<p> Upon closer examination, it appears that Doctor Zaius is holding a KEY in the portrait.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+            	checkFunc();
+        	}
+        	//Harambe in Room 6
+        	else if(lookItem == "harambe" && curRoom.roomNum == 6)
+        	{
+        		$("<p>There is no mercy in the eyes of Harambe...</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+            	checkFunc();
+        	}
+        	else if(lookItem == "harambe" && curRoom.roomNum != 6)
+        	{
+        		$("<p>Harambe stands beside you, glowing with heroism and pride.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+            	checkFunc();
+        	}
+        	//Object in Secret Room 7
+        	else if(lookItem == "object" && curRoom.roomNum == 7)
+        	{
+        		$("<p>It appears that the object is a RIFLE! As you take a closer look at the inner workings of the rifle, Harambe stands behind you, with a look of dread...</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+            	checkFunc();
+        	}
         }
        
         //Take Command; Take Item from Current Room
@@ -148,16 +205,33 @@ $(document).ready(function()
         }
         
         //Use Command; Use an item in the Current Room
-        else if(input = "use "+usePlayerItem)
+        else if(input == "use "+usePlayerItem)
         {
-        	if(player.useItem(usePlayerItem) == "stone key" && curRoom.roomNum == 0)
+        	//Room 1
+        	if(usePlayerItem == "door" && curRoom.roomNum == 1)
         	{
-        		$("<p>You used the "+usePlayerItem+
-        		". The door to the North is now open!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+        		$("<p>You pushed a button inlaid in the "+usePlayerItem+". "+
+        		"The door to the North creaks open, revealing the next room!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
                 curRoom.openRoom(curRoom.roomNum,"N");
-                displayInv(player);
                 checkFunc();
         	}
+        	
+        	//Room 2
+        	if(usePlayerItem == "portrait" && curRoom.roomNum == 2)
+        	{
+        		$("<p>You jostle the portrait to free the KEY from Doctor Zaius' hands. A KEY falls to the ground.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                curRoom.addItem(key);
+                checkFunc();
+        	}
+        	if(player.useItem(usePlayerItem) == "key" && curRoom.roomNum == 2)
+        	{
+        		$("<p>You used the "+usePlayerItem+
+        		". The door to the East is now open!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                curRoom.openRoom(curRoom.roomNum,"E");
+                displayInv(player);
+                checkFunc();
+        	}	
+        	
         }
         
         //Drop Command; Drops Player Item into Current Room
@@ -168,6 +242,7 @@ $(document).ready(function()
         		//Update with Less Items
                 $("<p>You dropped "+itemName+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
                 displayInv(player);
+                displayStats(player);
                 checkFunc();            
             }
             else
@@ -188,24 +263,46 @@ $(document).ready(function()
         //Unknown Command
         if(check == false)
         {   
-            var item = input.slice(0,4);
-            var useItem = input.slice(0,3);
+        	var attackCheck = input.slice(0,6);
+            var itemCheck = input.slice(0,4);
+            var useItemCheck = input.slice(0,3);
+            var equipItemCheck = input.slice(0,5);
+            var unequipItemCheck = input.slice(0,7);
+            var lookItemCheck = input.slice(0,7);
             
-            if(item == "take")
+            if(attackCheck == "attack")
             {
-                $("<p>You can't take "+itemName+" here.</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+            	$("<p>There is nothing to attack here!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
             }
-            else if(useItem == "use")
+            else if(itemCheck == "take")
             {
-                $("<p>You can't use "+usePlayerItem+" here.</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+                $("<p>There is no "+itemName+" to take.</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
             }
-            else if(equipItem == "equip")
+            else if(useItemCheck == "use")
             {
-                $("<p>You can't equip"+usePlayerItem+" here.</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+                $("<p>You can't use the "+usePlayerItem+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+            }
+            else if(equipItemCheck == "equip")
+            {
+                $("<p>You can't equip the "+equipItem+", or it is not in your inventory.</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+            }
+            else if(unequipItemCheck == "unequip")
+            {
+                if(unequipItem[0] == 'a' || unequipItem[0] == 'A')
+                	$("<p>You don't have an "+unequipItem+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+                else
+                	$("<p>You don't have a "+unequipItem+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+            }
+            else if(lookItemCheck == "look at")
+            {
+            	if(lookItem[0] == 'a' || lookItem[0] == 'A')
+                	$("<p>You don't see an "+lookItem+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+                else
+                	$("<p>You don't see a "+lookItem+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);
             }
             else
             {            
-                $("<p>I do not understand " + input + "</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
+                $("<p>I do not understand " + input + ".</p>").hide().insertBefore("#placeholder").fadeIn(1000);    
             }
              
         }
