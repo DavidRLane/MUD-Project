@@ -2,7 +2,7 @@
 	if(isset($_SESSION['loggedin']))
 	{
 ?>
-	<div class="account-actions">
+	<div class="account-actions-logged">
 		<a href="index.php?page=logout">Logout</a>
 		<!-- <a href="index.php?page=account-actions">Account</a> -->
 	</div>
@@ -11,7 +11,7 @@
 	else
 	{
 ?>
-	<div class="account-actions">
+	<div class="account-actions-unlogged">
 		<a href="index.php?page=login">Login</a>
 		<a href="index.php?page=register">Registration</a>
 	</div>

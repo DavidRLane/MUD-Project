@@ -12,7 +12,7 @@ var players = function(className,health,magic,defense,attack,stats,inv) {
     this.equippedWep = true;
     this.equippedArm = true;
     
-    //Find an Inv Item
+    //Find an Inv Item that is equipped
     this.findItem = function(item){
     	for(var i=0; i<this.inv.length; i++){
     		if(this.inv[i].name == item){
@@ -21,6 +21,15 @@ var players = function(className,health,magic,defense,attack,stats,inv) {
     		}
     	}
     	return false;
+    };
+    //Find an Inv Item
+    this.findItemInInv = function(item){
+        for(var i=0; i<this.inv.length; i++){
+            if(this.inv[i].name == item){
+                return true;
+            }
+        }
+        return false;
     };
     
     //Use an Item
@@ -171,13 +180,7 @@ var harambeOptions = [
 
 //Monster Types
 var dummy = new monsters("Dummy",50,2,5,false);
-var Harambe = new monsters("Harambe",500,999,0,false);
-
-/*
- * First time attacking Harambe he says: So it's treason then...
- * 
- * Combat for Harambe: Harambe thrashes you around like a small child for DAMAGE.
- */
+var Harambe = new monsters("Harambe",500,0,999,false);
 
 //Item Class
 var Items = function(name,equipped,use,pick,weap,arm,ring,desc,stats,equip){
@@ -511,12 +514,12 @@ function AttackPhase(attacktype)
 	    	}
 	    	else
 	    	{
-	    		$("<p>You violent actions have pleased the crowd, but you feel remorse in the fall of your newly acquired friend. "+
+	    		$("<p>Your violent actions have pleased the crowd, but you feel remorse in the fall of your newly acquired friend. "+
 	    		"The doors open to the north, revealing an inner chamber glowing red and readiating intense heat. "+
 	    		"Your mind tells you to turn back, run away from this hellish place, but your body is drawn to the chamber. "+
 	    		"Your legs move you forward and the red glow of the chamber soon engulfs your body...</p>").hide().insertBefore("#placeholder").fadeIn(1000);
 			
-				$("<p>Take you for playing! The tale will continue in Part 2, but only through your support! "+
+				$("<p>Thank you for playing! The tale will continue in Part 2, but only through your support! "+
 				"Give me your money right now and I will make more content, otherwise I will rest on my laurels. >:] </p>").hide().insertBefore("#placeholder").fadeIn(1000);
 		        
 		        document.getElementById("form-input").style.display = "none";
@@ -528,7 +531,7 @@ function AttackPhase(attacktype)
 	    	if(curRoom.enemy.name == "Dummy")
 	    	{
 	    		//Monster's Turn
-		        var monDam = Math.ceil(Math.random(curRoom.enemy.attack)+10);
+		        var monDam = Math.ceil(Math.random(8)*10+curRoom.enemy.attack);
 		        $("<p>"+curRoom.enemy.name+" smacks you upside the head for " + monDam + "!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
 		        
 		        player.health = player.health - monDam + player.defense;
@@ -537,7 +540,7 @@ function AttackPhase(attacktype)
 	    	else
 	    	{
 				//Monster's Turn
-		        var monDam = Math.ceil(Math.random(curRoom.enemy.attack)+10);
+		        var monDam = Math.ceil(Math.random(10)*10+curRoom.enemy.attack);
 		        $("<p>"+curRoom.enemy.name+" thrashes you around like a small child for " + monDam + "!</p>").hide().insertBefore("#placeholder").fadeIn(1000);
 		        
 		        player.health = player.health - monDam + player.defense;
@@ -549,8 +552,10 @@ function AttackPhase(attacktype)
 	    if(player.health < 0)
 	    {
     		$("<p> "+ curRoom.enemy.name + " has defeated "+player.className+"!</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
-    		$("<p>Your tale ends here in "+curRoom.name+".</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
-    		$("<p>Please refresh the page to start anew...</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
+    		$("<p>The crowd is pleased by the blood lust of the combatants, cheering with great fervor. "+
+    		"As you lay on the ground, surrounded by the bodies of heroes past, you look up at Harambe. "+
+    		"He stares down at you with the fury of a thousand Ape Men; you have made a great mistake today. "+
+    		"But it didn't have to be this way...refresh the page to start anew...</p>").hide().insertBefore("#placeholder").fadeIn(1000);	
     		
     		document.getElementById("form-input").style.display = "none";    	
 	    }              	
@@ -642,7 +647,7 @@ function moveMap(direction)
         	}
         	else if(curRoom.roomNum == 5)
         	{
-        		if(player.findItem("ring") == false)
+        		if(player.findItemInInv("ring") == false)
         		{
         			curRoom = room_6;
     	    		room_6.switchRooms(room_5);

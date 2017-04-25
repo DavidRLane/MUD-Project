@@ -104,7 +104,7 @@
 							 	
 							 	<div class="user-space">
 							 		<div id="class-options" style="text-align: center; margin-top:10px;">
-							 			<button id="rogButton" title="Short and sharp Knife, fitting for Rogues." onClick="">Dagger</button>
+							 			<button id="rogButton" title="Short and sharp Dagger, fitting for Rogues." onClick="">Dagger</button>
 							 			<button id="warButton" title="Large and blunt Club, typical of a Warrior." onClick="">Club</button>
 							 			<button id="wizButton" title="Finely crafted Staff, standard for any Wizard." onClick="">Staff</button>
 							 		</div>
@@ -138,8 +138,11 @@
 						 					<p><strong>use [item] = </strong>use the item in the room or in your inventory, if possible.</p>
 						 						<p><strong>Ex: "use key" = </strong>You used the key on the door.</p>
 						 					
-						 					<p><strong>equip [weapon or armor] = </strong>equip the item, boosting your stats or decreasing them.</p>		 				
+						 					<p><strong>equip [weapon or armor] = </strong>equip the item in your inventory, boosting your stats or decreasing them.</p>		 				
 							 					<p><strong>Ex: "equip steel helmet" = </strong>You put on the steel helmet.</p>
+							 				
+							 				<p><strong>unequip [weapon or armor] = </strong>unequip the item, but still keeping it in your inventory.</p>		 				
+							 					<p><strong>Ex: "unequip steel helmet" = </strong>You unequipped the steel helmet.</p>
 							 				
 							 				<p><strong>attack = </strong>attack the enemy in the room, if there is one.</p>		 				
 							 					<p><strong>Ex: "attack" = </strong>You strike at the target for 25 damage!</p>

@@ -164,6 +164,12 @@ $(document).ready(function()
         		$("<p> Upon closer examination, it appears that Doctor Zaius is holding a KEY in the portrait.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
             	checkFunc();
         	}
+        	//Dummy in Room 3
+        	else if(lookItem == "dummy" && curRoom.roomNum == 3)
+        	{
+        	    $("<p> Look the dummy in it's vacant, beady eyes, you feel a sudden urge to ATTACK him.</p>").hide().insertBefore("#placeholder").fadeIn(1000);
+                checkFunc();
+        	}
         	//Harambe in Room 6
         	else if(lookItem == "harambe" && curRoom.roomNum == 6)
         	{

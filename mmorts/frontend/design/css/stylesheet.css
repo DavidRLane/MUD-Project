@@ -38,7 +38,24 @@ body{
 	float:left;
 	margin-left:15px;
 }
-.account-actions{
+.account-actions-logged{
+	background-color:#B2DBA1;
+	border:1px solid black;
+	height:30px;
+	width:57px;
+	padding-left:5px;
+	padding-top:4px;
+	float:right;
+	margin-top:80px;
+	margin-right:25px;
+}
+.account-actions-unlogged{
+	background-color:#B2DBA1;
+	border:1px solid black;
+	height:30px;
+	width:128px;
+	padding-left:5px;
+	padding-top:4px;
 	float:right;
 	margin-top:80px;
 	margin-right:25px;
